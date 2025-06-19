@@ -2,7 +2,7 @@ from Methods.method import Method
 
 
 def get_prediction_method(method_name):
-    elif method_name == "DBN":
+    if method_name == "DBN":
         from Methods.EDBN.Train import train, update
         from Methods.EDBN.Predictions import test
         return Method("DBN", train, test, update)

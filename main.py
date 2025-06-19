@@ -10,7 +10,7 @@ from Methods.EDBN.Predictions import test, predict_next_event
 
 if __name__ == '__main__':
     print("PREPARE")
-    data_object = Data.get_data("BPIC11")
+    data_object = Data.get_data("Helpdesk")
     #print(dir(data_object.logfile))
 
     print("SELECT SETTINGS")
