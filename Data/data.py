@@ -25,19 +25,15 @@ class Data:
                 self.logfile.k = 40
             else:
                 self.logfile.k = prefix_size
-
         if setting.add_end:
             self.logfile.add_end_events()
-
         if setting.filter_cases:
             self.logfile.filter_case_length(setting.filter_cases)
-
         print("CONVERT")
         self.logfile.convert2int()
         print("K-CONTEXT")
         self.logfile.create_k_context()
         self.logfile.contextdata = self.logfile.contextdata.sort_values(by=[self.logfile.time]).reset_index()
-
         print("SPLIT TRAIN-TEST")
         if setting.train_split != "k-fold":
             self.train, self.test_orig = self.logfile.splitTrainTest(setting.train_percentage, setting.split_cases, setting.train_split)
