@@ -30,7 +30,7 @@ def train_model(log):
     return train(log)
 
 
-def test_predict_next_event_row(log, model):
+def predict_next_event_row(log, model): #used for testing the model
     print("=== TEST: Predict next event for a single row ===")
     context_row = log.contextdata.iloc[-1:]
     row_tuple = list(context_row.iterrows())[0]
@@ -45,7 +45,7 @@ def test_predict_next_event_row(log, model):
     print("Probability assigned to true label:", true_prob)
 
 
-def test_predict_suffix_threshold(log, model):
+def predict_suffix_threshold(log, model): # ------> function to use for prediction
     print("=== TEST: Predict case suffix with loop threshold ===")
     last_case = list(log.get_cases())[-1]
     trace = last_case[1]
@@ -79,8 +79,8 @@ def main():
     log = prepare_data()
     model = train_model(log)
 
-    #test_predict_next_event_row(log, model)
-    test_predict_suffix_threshold(log, model)
+    #predict_next_event_row(log, model)
+    predict_suffix_threshold(log, model)
 
 
 if __name__ == '__main__':
