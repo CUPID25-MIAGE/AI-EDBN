@@ -35,12 +35,12 @@ class Data:
         self.logfile.create_k_context()
         self.logfile.contextdata = self.logfile.contextdata.sort_values(by=[self.logfile.time]).reset_index()
         print("SPLIT TRAIN-TEST")
-        if setting.train_split != "k-fold":
+        """ if setting.train_split != "k-fold":
             self.train, self.test_orig = self.logfile.splitTrainTest(setting.train_percentage, setting.split_cases, setting.train_split)
             self.train.contextdata = self.train.contextdata.sort_values(by=[self.train.time]).reset_index()
             self.test_orig.contextdata = self.test_orig.contextdata.sort_values(by=[self.train.time]).reset_index()
         else:
-            self.create_folds(setting.train_k)
+            self.create_folds(setting.train_k) """
 
     def create_batch(self, split="normal", timeformat=None):
         if split == "normal":

@@ -204,23 +204,39 @@ def predict_next_event(edbn_model, log):
     return result
 
 
-def predict_next_event_row(row, model, activity):
+def predict_next_event_row(row, log, model, activity):
     """"
     Predict next activity for a single row
     """
+    print("\n\n\n **********************************inside predict_next_event_row**********************************")
+    print("param row is : ", row)
+    print("param activity is : ", activity)
     parents = model.variables[activity].conditional_table.parents
-
+    print("parents: ", parents)
     value = []
+    
     for parent in parents:
+        print("\n* loop prent: ", parent)
         value.append(getattr(row[1], parent.attr_name))
+        print("row[1] : ", row[1])
+        print("parent.attr_name : ",parent.attr_name)
     tuple_val = tuple(value)
-
+    print("\n------ OUT of Loop")
+    print("tuple value : ", tuple_val)
     activity_var = model.variables[activity]
+    print("activity_var : ", activity_var)
     probs, unknown = get_probabilities(activity_var, tuple_val, parents)
-
+    
+    for p in probs:
+        i=log.convert_int2string(log.activity, p)
+        print("(activity, string) = ", p, i)
+    
+    print("probs : ",probs)
+    print("unknown : ", unknown)
     predicted_val = max(probs, key=lambda l: probs[l])
-
-    return (getattr(row[1], activity), predicted_val, probs[predicted_val], probs.get(getattr(row[1], activity),0))
+    result=(getattr(row[1], activity), predicted_val, probs[predicted_val], probs.get(getattr(row[1], activity),0))
+    print("result : ",result)
+    return result
 
     # if getattr(row[1], activity) == predicted_val:
     #     return 1
@@ -361,7 +377,7 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
 
     :param all_parents: detailed list of attributes
     :param attributes: ordered list of attributes
-    :param current_row: current row, containg history
+    :param current_row: current row, containing history
     :param model: eDBN model
     :param activity_attr: name of control flow attribute
     :param end_event: event indicating end of a trace
@@ -370,12 +386,13 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
     predicted_rows = []
     repeated_event = [None]
     unknown_value = False
+    activity_probabilities={}
 
-    while current_row[0][0] != end_event and len(predicted_rows) < 100:  # The event attribute should always be the first attribute in the list
+    while current_row[0][0] != end_event and len(predicted_rows) < 100:
         current_row[2] = current_row[1]
         current_row[1] = current_row[0]
         current_row[0] = [None] * len(all_parents)
-        # Predict value for every attribute
+
         for attr in attributes:
             value = []
             for parent_detail in all_parents[attr]:
@@ -384,6 +401,7 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
 
             probs, unknown = get_probabilities(model.variables[attr], tuple_val, [v["variable"] for v in all_parents[attr]])
 
+
             if unknown:
                 unknown_value = True
 
@@ -391,15 +409,18 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
                 max_val = None
                 max_prob = 0
                 for val, prob in probs.items():
-                    duplicate_threshold = model.duplicate_events.get(val, 1)
-
                     if (prob > max_prob and attr != activity_attr) or \
-                            (prob > max_prob and attr == activity_attr and repeated_event[0] != val) or \
-                            (prob > max_prob and attr == activity_attr and len(repeated_event) <= duplicate_threshold):
+                    (prob > max_prob and attr == activity_attr and repeated_event[0] != val):
                         max_prob = prob
                         max_val = val
 
                 current_row[0][attributes.index(attr)] = max_val
+
+                #saving the probability of each event
+                if attr == activity_attr and max_val is not None:
+                    activity_probabilities[max_val] = max_prob
+
+                
             else:
                 current_row[0][attributes.index(activity_attr)] = end_event
 
@@ -409,8 +430,16 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
             repeated_event = [current_row[0][0]]
 
         predicted_rows.append(current_row[0][:])
-    return predicted_rows, unknown_value
+    
+    return predicted_rows, activity_probabilities, unknown_value
 
+
+def predict_event(log, all_parents, attributes, current_row, model, activity_attr, end_event):
+    predicted_rows, probs, _ = predict_case_suffix_loop_threshold(all_parents, attributes, current_row, model, activity_attr, end_event)
+    predicted_event_int = predicted_rows[0][0]
+    predicted_event_str = log.convert_int2string(log.activity, predicted_event_int)
+    prob_predicted_event = probs[predicted_event_int]
+    return predicted_event_int, predicted_event_str, prob_predicted_event
 
 def get_prediction_attributes(model, activity_attribute):
     """

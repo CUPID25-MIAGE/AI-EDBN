@@ -1,117 +1,85 @@
 from Methods.EDBN import Predictions as edbn_predict
+from Methods.EDBN.Train import train
+from Methods.EDBN.Predictions import (
+    predict_next_event_row,
+    predict_case_suffix_loop_threshold,
+    get_prediction_attributes,
+    predict_event
+)
 import Predictions.setting
-import Methods
-from Utils.LogFile import LogFile
 import Data
-import Predictions.metric
-from Methods.EDBN.Train import train, update
-from Methods.EDBN.Predictions import test, predict_next_event
+from Utils.LogFile import LogFile
+
+
+#CONFIGURATION
+DATASET_NAME = "events_with_context"
+SETTINGS = Predictions.setting.STANDARD
+
+
+def prepare_data():
+    print("PREPARE DATA")
+    data_object = Data.get_data(DATASET_NAME)
+    data_object.prepare(SETTINGS)
+    return data_object.logfile
+
+
+def train_model(log):
+    print("TRAINING MODEL")
+    return train(log)
+
+
+def test_predict_next_event_row(log, model):
+    print("=== TEST: Predict next event for a single row ===")
+    context_row = log.contextdata.iloc[-1:]
+    row_tuple = list(context_row.iterrows())[0]
+
+    true_val, predicted_val, confidence, true_prob = predict_next_event_row(
+        row_tuple, log, model=model, activity=log.activity
+    )
+
+    print("True next event:", log.convert_int2string(log.activity, true_val))
+    print("Predicted event:", log.convert_int2string(log.activity, predicted_val))
+    print("Confidence:", confidence)
+    print("Probability assigned to true label:", true_prob)
+
+
+def test_predict_suffix_threshold(log, model):
+    print("=== TEST: Predict case suffix with loop threshold ===")
+    last_case = list(log.get_cases())[-1]
+    trace = last_case[1]
+
+    all_parents, attributes = get_prediction_attributes(model, log.activity)
+
+    current_row = {
+        i: [getattr(trace.iloc[-(i + 1)], attr) if len(trace) > i else 0 for attr in attributes]
+        for i in range(log.k + 1)
+    }
+
+    predicted_event_int, predicted_event_str, prob_event = predict_event(
+        log,
+        all_parents=all_parents,
+        attributes=attributes,
+        current_row=current_row,
+        model=model,
+        activity_attr=log.activity,
+        end_event=log.convert_string2int(log.activity, "END")
+    )
+
+    if predicted_event_int:
+        print("Predicted next event (code):", predicted_event_str)
+        print("Probability of next event:", prob_event)
+    else:
+        print("No prediction made for suffix.")
+
+
+def main():
+    print("===== START PROCESS =====")
+    log = prepare_data()
+    model = train_model(log)
+
+    #test_predict_next_event_row(log, model)
+    test_predict_suffix_threshold(log, model)
 
 
 if __name__ == '__main__':
-    print("PREPARE")
-    data_object = Data.get_data("events")
-    #print(dir(data_object.logfile))
-
-    print("SELECT SETTINGS")
-    settings = Predictions.setting.STANDARD
-
-    print("PREPARE DATA")
-    data_object.prepare(settings)
-    log= data_object.logfile
-
-    #print("GET PREDICTION METHOD")  
-    #m = Methods.get_prediction_method("DBN")
-
-    print("TRAIN MODEL")
-    model = train(log)
-    
-    #print("\n_____*********************************************\npriniting model")
-    #print(dir(model.iterate_variables()))
-    #model.print_parents()
-    #print("TEST MODEL")
-    #predictions = predict_next_event(model, log)
-    # Step 4: Display predictions
-    #for actual, predicted, p_predicted, p_actual in predictions:
-    #    print(f"Actual: {actual}, Predicted: {predicted}, P(Predicted): {p_predicted:.4f}, P(Actual): {p_actual:.4f}")
-        
-    results = test(model, log)
-    predicted_event = log.convert_int2string(log.activity, results[-1][1])
-    
-    print("predicted event is: ")
-    print(predicted_event)
-
-    print("GET ACCURACY")
-    accuracy = Predictions.metric.ACCURACY.calculate(results)
-    print("Accuracy:", accuracy)
-
-    #%%
-    #Prepare context
-    log.create_k_context()
-    # Grab the last k-context row
-    context_row = log.contextdata.iloc[-1:]
-    print("context row is: ")
-    print(context_row)
-    row_tuple = list(context_row.iterrows())[0]
-    print("row_tuple is: ")
-    print(row_tuple)
-    # Run the prediction
-    true_val, predicted_val, confidence, true_prob = edbn_predict.predict_next_event_row(
-        row_tuple,
-        model=model,
-        activity=log.activity
-    )
-    # Convert int values to strings for readability
-    true_event = log.convert_int2string(log.activity, true_val)
-    predicted_event = log.convert_int2string(log.activity, predicted_val)
-    # Display result
-    print("True next event (if known):", true_event)
-    print("Predicted next event:", predicted_event)
-    print("Confidence:", confidence)
-    print("Probability assigned to actual:", true_prob)
-
-
-
-#UPDATE
-"""     #Update the model
-    print("PREPARE THE UPDATED LOG")
-    data_object = Data.get_data("BPIC112")
-    print(dir(data_object.logfile))
-
-    print("PREPARE UPDATED DATA")
-    data_object.prepare(settings)
-    log= data_object.logfile
-
-    print("updating the model")
-    update(model, log)
-
-    #%%
-    # Make sure context is prepared
-    print("\n\n***********************************************\n")
-    print("\n\n\nPrediction after update:\n")
-    log.create_k_context()
-
-    # Grab the last k-context row
-    context_row = log.contextdata.iloc[-1:]
-    print("context row is: ")
-    print(context_row)
-    row_tuple = list(context_row.iterrows())[0]
-    print("row_tuple is: ")
-    print(row_tuple)
-
-    # Run the prediction
-    true_val, predicted_val, confidence, true_prob = edbn_predict.predict_next_event_row(
-        row_tuple,
-        model=model,
-        activity=log.activity
-    )
-
-    # Convert int values to strings for readability
-    true_event = log.convert_int2string(log.activity, true_val)
-    predicted_event = log.convert_int2string(log.activity, predicted_val)
-
-    # Display result
-    print("True next event (if known):", true_event)
-    print("Predicted next event:", predicted_event)
-    print("Confidence:", confidence)
-    print("Probability assigned to actual:", true_prob) """
+    main()
