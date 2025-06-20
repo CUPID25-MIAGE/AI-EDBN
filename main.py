@@ -1,3 +1,4 @@
+from explanation import explain_last_prediction
 from Methods.EDBN import Predictions as edbn_predict
 import Predictions.setting
 import Methods
@@ -69,6 +70,11 @@ if __name__ == '__main__':
     print("Predicted next event:", predicted_event)
     print("Confidence:", confidence)
     print("Probability assigned to actual:", true_prob)
+
+    # Show the explanation
+    predicted_label, explanation = explain_last_prediction(log, model, activity_attr=log.activity)
+    print("Explication :", explanation)
+    #%%
 
 
 
