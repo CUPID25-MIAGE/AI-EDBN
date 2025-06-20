@@ -1,3 +1,4 @@
+from explanation import explain_last_prediction
 from Methods.EDBN import Predictions as edbn_predict
 from Methods.EDBN.Train import train
 from Methods.EDBN.Predictions import (
@@ -9,6 +10,7 @@ from Methods.EDBN.Predictions import (
 import Predictions.setting
 import Data
 from Utils.LogFile import LogFile
+from explanation import *
 
 
 #CONFIGURATION
