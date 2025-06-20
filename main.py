@@ -68,7 +68,7 @@ def test_predict_suffix_threshold(log, model):
     )
 
     if predicted_event_int:
-        print("Predicted next event (code):", predicted_event_str)
+        print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
     else:
         print("No prediction made for suffix.")
