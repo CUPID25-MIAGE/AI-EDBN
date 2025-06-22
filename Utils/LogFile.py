@@ -78,7 +78,7 @@ class LogFile:
         :param file_out: filename for newly created file
         :return: number of lines converted
         """
-        self.data = self.data.apply(lambda x: self.convert_column2ints(x))
+        self.data = self.data.apply(lambda x: self.convert_column2ints(x) if x.name != "sunUp" else x)
         self.data.to_csv(file_out, index=False)
 
     def convert_column2ints(self, x):

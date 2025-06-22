@@ -23,6 +23,8 @@ class CPT(ConditionalTable):
         return self.cpt.keys()
 
     def get_values(self, parent_val):
+        #print("inside CPT, parent_val is: ",parent_val)
+        #print(self.parent_count)
         output = {}
         if len(parent_val) == 1:
             parent_val = parent_val[0]
@@ -30,6 +32,9 @@ class CPT(ConditionalTable):
             output[val] = count / self.parent_count[parent_val]
         return output
         # return self.cpt[parent_val]
+
+   
+
 
 
     def train(self, log):

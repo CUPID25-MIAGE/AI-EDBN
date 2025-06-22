@@ -8,6 +8,3 @@ def get_time_stamp_case_id():
     now = datetime.datetime.now()
     now_minus_3h = now - datetime.timedelta(hours=4) #reset du case id at 3 pm to next day
     return now_minus_3h.strftime("%Y%m%d")
-
-
-print(get_time_stamp_case_id())

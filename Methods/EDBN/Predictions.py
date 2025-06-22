@@ -78,18 +78,31 @@ def cond_prob(a,b):
     return len(set.intersection(a,b)) / len(b)
 
 
+
+
 def get_probabilities(variable, val_tuple, parents):
     """
     Calculate probabilities for all possible next values for the given variable.
     """
     if variable.conditional_table.check_parent_combination(val_tuple):
+        #print("***** INSIDE get_probabilities: *****") 
+        #print("- variable: ",variable)
+        #print("--> cond table: ", variable.conditional_table)
+        #print("--> (cpt_probs) variable.conditional_table.get_values(val_tuple): ",variable.conditional_table.get_values(val_tuple))
+        #print("- val_tuple: ",val_tuple)
+        #print("- parents: ",parents)
+
         cpt_probs = variable.conditional_table.get_values(val_tuple)
+
         probs = {}
+        #print("Looping through cpt_probs values: ")
         for value in cpt_probs:
             # p_value = len(variable.value_counts[value]) / variable.total_rows
             # probs[value] = cpt_probs[value] * \
             #                (LAMBDA + (1 - LAMBDA) * (variable.conditional_table.cpt_probs[val_tuple] / p_value))
             probs[value] = cpt_probs[value]
+            #print("***Loop) value: ", value)
+            #print("***Loop) cpt_probs[value]: ",cpt_probs[value])
 
         return probs, False
         # return variable.conditional_table.get_values(val_tuple), False
@@ -370,7 +383,7 @@ def predict_suffix_case(case, all_parents, attributes, model, end_event, activit
     return prefix_results
 
 
-def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, model, activity_attr, end_event):
+def predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row, model, activity_attr, end_event):
     """
     Predict the suffix for a case, given the latest known row(s)
     Selecting values with highest probability + Only allowing a limited amount of repetition of a single event
@@ -387,6 +400,8 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
     repeated_event = [None]
     unknown_value = False
     activity_probabilities={}
+    next_row = True
+    last_event=current_row[0][0]
 
     while current_row[0][0] != end_event and len(predicted_rows) < 100:
         current_row[2] = current_row[1]
@@ -398,6 +413,8 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
             for parent_detail in all_parents[attr]:
                 value.append(current_row[parent_detail["k"]][attributes.index(parent_detail["name"])])
             tuple_val = tuple(value)
+            #print("\n\n\ntuple_val is : ",tuple_val)
+            #print("all_parents : ",all_parents)
 
             probs, unknown = get_probabilities(model.variables[attr], tuple_val, [v["variable"] for v in all_parents[attr]])
 
@@ -409,17 +426,21 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
                 max_val = None
                 max_prob = 0
                 for val, prob in probs.items():
-                    if (prob > max_prob and attr != activity_attr) or \
-                    (prob > max_prob and attr == activity_attr and repeated_event[0] != val):
+                    duplicate_threshold = model.duplicate_events.get(val, 1)
+                    if val!=last_event and ((prob > max_prob and attr != activity_attr) or \
+                    (prob > max_prob and attr == activity_attr and repeated_event[0] != val) or \
+                    (prob > max_prob and attr == activity_attr and len(repeated_event) <= duplicate_threshold)):
                         max_prob = prob
                         max_val = val
 
                 current_row[0][attributes.index(attr)] = max_val
 
-                #saving the probability of each event
-                if attr == activity_attr and max_val is not None:
-                    activity_probabilities[max_val] = max_prob
-
+                #saving the probability of each event ()
+                #activity_attr is the event attr, we don't need the sunUp/sunDown one
+                if attr == activity_attr and max_val is not None and next_row:
+                    activity_probabilities = probs
+                    #print(activity_probabilities)
+                    next_row=False
                 
             else:
                 current_row[0][attributes.index(activity_attr)] = end_event
@@ -430,16 +451,19 @@ def predict_case_suffix_loop_threshold(all_parents, attributes, current_row, mod
             repeated_event = [current_row[0][0]]
 
         predicted_rows.append(current_row[0][:])
-    
+        
     return predicted_rows, activity_probabilities, unknown_value
 
 
 def predict_event(log, all_parents, attributes, current_row, model, activity_attr, end_event):
-    predicted_rows, probs, _ = predict_case_suffix_loop_threshold(all_parents, attributes, current_row, model, activity_attr, end_event)
+    predicted_rows, probs, _ = predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row, model, activity_attr, end_event)
     predicted_event_int = predicted_rows[0][0]
     predicted_event_str = log.convert_int2string(log.activity, predicted_event_int)
     prob_predicted_event = probs[predicted_event_int]
+    print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\nPossible events: ", [(log.convert_int2string(log.activity, k), v) for k, v in probs.items()])
     return predicted_event_int, predicted_event_str, prob_predicted_event
+
+
 
 def get_prediction_attributes(model, activity_attribute):
     """

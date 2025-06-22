@@ -2,20 +2,21 @@ from explanation import explain_last_prediction
 from Methods.EDBN import Predictions as edbn_predict
 from Methods.EDBN.Train import train
 from Methods.EDBN.Predictions import (
+    learn_duplicated_events,
     predict_next_event_row,
     predict_case_suffix_loop_threshold,
     get_prediction_attributes,
-    predict_event
-)
+    predict_event)
 import Predictions.setting
 import Data
 from Utils.LogFile import LogFile
 from explanation import *
+import pandas as pd
 
 
 #CONFIGURATION
 DATASET_NAME = "events_with_context"
-SETTINGS = Predictions.setting.STANDARD
+SETTINGS = Predictions.setting.DBN
 
 
 def prepare_data():
@@ -46,16 +47,25 @@ def predict_next_event_row(log, model): #used for testing the model
 
 
 def predict_suffix_threshold(log, model): # ------> function to use for prediction
-    print("=== TEST: Predict case suffix with loop threshold ===")
-    last_case = list(log.get_cases())[-1]
-    trace = last_case[1]
+    #print("=== TEST: Predict case suffix with loop threshold ===")
+    #print("event mapping:", log.values["event"])
+    #learn duplicate events threshold
+    model.duplicate_events = {0: 0}
+    #print("threshold duplicate events: ", model.duplicate_events)
+    #get latest case id
+    latest_case_id = log.contextdata.iloc[-1:]["case"].iloc[0]
+    trace = log.get_cases().get_group(latest_case_id) #last case
 
+    #print("trace (last case): ",trace)
+ 
     all_parents, attributes = get_prediction_attributes(model, log.activity)
-
+    #print(" \n\n\n!!!!!!!!!!!!!!!!!!!!!!! attributes are: ",attributes)
     current_row = {
         i: [getattr(trace.iloc[-(i + 1)], attr) if len(trace) > i else 0 for attr in attributes]
         for i in range(log.k + 1)
     }
+
+    #print("-----> current_row : ",current_row)
 
     predicted_event_int, predicted_event_str, prob_event = predict_event(
         log,
@@ -66,8 +76,11 @@ def predict_suffix_threshold(log, model): # ------> function to use for predicti
         activity_attr=log.activity,
         end_event=log.convert_string2int(log.activity, "END")
     )
+    #print("model.variables = ",model.variables)
+    #print("attributes: ",attributes)
 
     if predicted_event_int:
+        print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
     else:
