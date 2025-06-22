@@ -8,3 +8,22 @@ def get_time_stamp_case_id():
     now = datetime.datetime.now()
     now_minus_3h = now - datetime.timedelta(hours=4) #reset du case id at 3 pm to next day
     return now_minus_3h.strftime("%Y%m%d")
+
+def add_new_row_csv(row_data):
+    import csv
+    import os
+    log_date = get_time_stamp_case_id()
+    log_name = 'log_' + log_date + '.csv'
+    filepath = 'Data/logs/' + log_name
+    row_data.insert(0, log_date)
+    if not os.path.exists(filepath):
+        with open(filepath, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['case_id','completeTime', 'event','sunUp'])
+            writer.writerow(row_data)
+    else :
+        with open(filepath, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(row_data)
+
+#add_new_row_csv(['test','test','test'])
