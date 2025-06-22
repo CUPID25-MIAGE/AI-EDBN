@@ -6,7 +6,9 @@ from Methods.EDBN.Predictions import (
     predict_next_event_row,
     predict_case_suffix_loop_threshold,
     get_prediction_attributes,
-    predict_event)
+    predict_event,
+    coach_event
+)
 import Predictions.setting
 import Data
 from Utils.LogFile import LogFile
@@ -46,27 +48,23 @@ def predict_next_event_row(log, model): #used for testing the model
     print("Probability assigned to true label:", true_prob)
 
 
-def predict_suffix_threshold(log, model): # ------> function to use for prediction
-    #print("=== TEST: Predict case suffix with loop threshold ===")
-    #print("event mapping:", log.values["event"])
-    #learn duplicate events threshold
-    model.duplicate_events = {0: 0}
-    #print("threshold duplicate events: ", model.duplicate_events)
-    #get latest case id
+def get_current_row(log, model, activity_attr):
     latest_case_id = log.contextdata.iloc[-1:]["case"].iloc[0]
-    trace = log.get_cases().get_group(latest_case_id) #last case
-
-    #print("trace (last case): ",trace)
- 
-    all_parents, attributes = get_prediction_attributes(model, log.activity)
-    #print(" \n\n\n!!!!!!!!!!!!!!!!!!!!!!! attributes are: ",attributes)
+    trace = log.get_cases().get_group(latest_case_id)
+    all_parents, attributes = get_prediction_attributes(model, activity_attr)
     current_row = {
         i: [getattr(trace.iloc[-(i + 1)], attr) if len(trace) > i else 0 for attr in attributes]
         for i in range(log.k + 1)
     }
+    return current_row, attributes, all_parents, trace
 
-    #print("-----> current_row : ",current_row)
 
+def predict_suffix_threshold(log, model): # ------> function to use for prediction
+    #print("=== TEST: Predict case suffix with loop threshold ===")
+    #print("event mapping:", log.values["event"])
+    #learn duplicate events threshold
+    model.duplicate_events = {}
+    current_row, attributes, all_parents, trace = get_current_row(log, model, log.activity)
     predicted_event_int, predicted_event_str, prob_event = predict_event(
         log,
         all_parents=all_parents,
@@ -78,6 +76,33 @@ def predict_suffix_threshold(log, model): # ------> function to use for predicti
     )
     #print("model.variables = ",model.variables)
     #print("attributes: ",attributes)
+
+    if predicted_event_int:
+        print("Predicted next event (code):", predicted_event_int)
+        print("Predicted next event:", predicted_event_str)
+        print("Probability of next event:", prob_event)
+    else:
+        print("No prediction made for suffix.")
+
+    #---------------coach
+    coach_event(
+        model=model,
+        all_parents=all_parents,
+        attributes=attributes,
+        current_row=current_row
+    )
+
+    #---------------predict again
+    current_row, attributes, all_parents, trace = get_current_row(log, model, log.activity)
+    predicted_event_int, predicted_event_str, prob_event = predict_event(
+        log,
+        all_parents=all_parents,
+        attributes=attributes,
+        current_row=current_row,
+        model=model,
+        activity_attr=log.activity,
+        end_event=log.convert_string2int(log.activity, "END")
+    )
 
     if predicted_event_int:
         print("Predicted next event (code):", predicted_event_int)

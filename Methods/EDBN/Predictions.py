@@ -84,7 +84,9 @@ def get_probabilities(variable, val_tuple, parents):
     """
     Calculate probabilities for all possible next values for the given variable.
     """
+    
     if variable.conditional_table.check_parent_combination(val_tuple):
+        print("inside get probabilities : tuple exists in cpt as a parent combiantion")
         #print("***** INSIDE get_probabilities: *****") 
         #print("- variable: ",variable)
         #print("--> cond table: ", variable.conditional_table)
@@ -107,6 +109,7 @@ def get_probabilities(variable, val_tuple, parents):
         return probs, False
         # return variable.conditional_table.get_values(val_tuple), False
     else:
+        print("inside get probabilities : its an unseen combo")
         unseen_value = False
         value_combinations = []
         known_attributes_indexes = None
@@ -396,6 +399,19 @@ def predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row,
     :param end_event: event indicating end of a trace
     :return: updated current_row
     """
+    print("\n--- STARTING predict_case_suffix_loop_threshold ---")
+    print(f"Attributes: {attributes}")
+    print(f"Activity attribute: {activity_attr}")
+    print(f"End event: {end_event}")
+    print(f"Current row (k-context):")
+    for k in sorted(current_row.keys()):
+        print(f"  t-{k}: {current_row[k]}")
+
+    print("\nAll parents mapping:")
+ 
+    print(all_parents.items())
+    print(f"\nModel variables: {[name for name, _ in model.iterate_variables()]}")
+
     predicted_rows = []
     repeated_event = [None]
     unknown_value = False
@@ -413,8 +429,10 @@ def predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row,
             for parent_detail in all_parents[attr]:
                 value.append(current_row[parent_detail["k"]][attributes.index(parent_detail["name"])])
             tuple_val = tuple(value)
-            #print("\n\n\ntuple_val is : ",tuple_val)
-            #print("all_parents : ",all_parents)
+            print("\n\n\ntuple_val is : ",tuple_val)
+            if next_row and attr == activity_attr:
+               
+                print("all_parents : ",all_parents)
 
             probs, unknown = get_probabilities(model.variables[attr], tuple_val, [v["variable"] for v in all_parents[attr]])
 
@@ -457,6 +475,9 @@ def predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row,
 
 def predict_event(log, all_parents, attributes, current_row, model, activity_attr, end_event):
     predicted_rows, probs, _ = predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row, model, activity_attr, end_event)
+    if not predicted_rows:
+        print("No predictions were made.")
+        return None, None, 0.0
     predicted_event_int = predicted_rows[0][0]
     predicted_event_str = log.convert_int2string(log.activity, predicted_event_int)
     prob_predicted_event = probs[predicted_event_int]
@@ -464,6 +485,89 @@ def predict_event(log, all_parents, attributes, current_row, model, activity_att
     return predicted_event_int, predicted_event_str, prob_predicted_event
 
 
+def coach_event(model, all_parents, attributes, current_row, target_attribute="event", outcome=5):
+    """
+    Force the model to assign probability 1.0 to `outcome` for the parent combination derived
+    from the current_row and all_parents for the given target_attribute.
+
+    Parameters:
+    - model: the EDBN model
+    - all_parents: dict of parent info
+    - attributes: list of all attribute names
+    - current_row: dictionary holding k-context (e.g., {0: [...], 1: [...], 2: [...]})
+    - target_attribute: attribute whose CPT you want to modify
+    - outcome: the value to force as the only possible result
+    """
+    variable = model.get_variable(target_attribute)
+    cpt = variable.conditional_table
+
+    # Build the parent_val tuple using the expected parent layout
+    parent_val = (4, 5, 1)
+
+    print("variable:", variable)
+    print("cpt parent count keys:", list(cpt.parent_count.keys()))
+    print("parent_val to coach:", parent_val)
+
+    if parent_val not in cpt.parent_count:
+        print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
+        cpt.cpt[parent_val] = {outcome: 1}
+        cpt.parent_count[parent_val] = 1
+    else:
+        #overwrite with same total count
+        count = cpt.parent_count[parent_val]
+        cpt.cpt[parent_val] = {outcome: count}
+
+    print(f"Coached CPT: {cpt.cpt[parent_val]} (prob=1.0)")
+
+
+
+def fail_coach_event(model, target_attribute="event", parent_val=(10,1), outcome=5):
+    """
+    Force the model to assign probability 1.0 to `outcome` for the given `parent_val` combination
+    on the specified attribute.
+
+    Parameters:
+    - model: the trained EDBN model
+    - target_attribute: the name of the attribute being coached (default 'event')
+    - parent_val: tuple or int representing the parent combination
+    - outcome: int (the value to assign probability 1 to)
+    """
+    variable = model.get_variable(target_attribute)
+    cpt = variable.conditional_table
+    print("variable: ",variable)
+    print("cpt is: ",cpt)
+    print("cpt parent count: ", cpt.parent_count)
+
+    #normalize single-parent keys
+    if isinstance(parent_val, tuple) and len(parent_val) == 1:
+        parent_val = parent_val[0]
+
+    #check that the parent_val exists
+    if parent_val not in cpt.parent_count:
+        print(f"WARNING: parent_val {parent_val} not found in CPT — cannot coach.")
+        return
+
+    count = cpt.parent_count[parent_val]
+
+    #force the outcome
+    cpt.cpt[parent_val] = {outcome: count}
+    print(f"Coached CPT: {parent_val} -> {outcome} (prob=1.0)")
+
+
+def coach(model, all_parents, attributes, outcome):
+    """
+        model: edbn model
+        all_parents: combination of parents events 
+        attributes: parent attributes
+        outcome: coeached event code (int)
+    """
+
+    value = []
+    #for parent_detail in all_parents["event"]:
+    #    value.append(current_row[parent_detail["k"]][attributes.index(parent_detail["name"])])
+    #tuple_val = tuple(value)
+    tuple_val = (10, 1)
+    coach_event(tuple_val, outcome)
 
 def get_prediction_attributes(model, activity_attribute):
     """

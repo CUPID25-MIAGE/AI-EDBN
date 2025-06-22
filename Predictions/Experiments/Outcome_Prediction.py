@@ -16,7 +16,7 @@ def run_edbn():
 
     log.create_k_context()
 
-    train_log, test_log = log.splitTrainTest(80, True, "train-test")
+                    train_log, test_log = log.splitTrainTest(80, True, "train-test")
 
     train_log.ignoreHistoryAttributes.add("label")
 
