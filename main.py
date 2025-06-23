@@ -54,7 +54,11 @@ def predict_suffix(log, model): # ------> function to use for prediction
         model=model
     )
 
-    if filter_check(predicted_event_str): 
+    if filter_check(predicted_event_str):
+        from datetime import datetime
+        current_datetime = datetime.now()
+        formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        add_new_row_csv([formatted_datetime,predicted_event_str, 0])
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
