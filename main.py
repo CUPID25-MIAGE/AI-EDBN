@@ -19,9 +19,9 @@ DATASET_NAME = "train"
 SETTINGS = Predictions.setting.DBN
 
 
-def prepare_data():
+def prepare_data(filename=DATASET_NAME):
     print("PREPARE DATA")
-    data_object = Data.get_data(DATASET_NAME)
+    data_object = Data.get_data(filename)
     data_object.prepare(SETTINGS)
     return data_object.logfile
 
@@ -84,6 +84,28 @@ def main():
             current_row=current_row,
             outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
         )
+
+def mainV2():
+    print("===== START PROCESS =====")
+    #executed once
+    log = prepare_data()
+    model = train_model(log)
+
+    #TO DO: while true:
+    #TO DO: if event received:
+    while(True):
+        csvName = input("enter csv name to predict (or 'exit' to quit): ")
+        csvLog = prepare_data(csvName)
+        all_parents, attributes, current_row = predict_suffix(csvLog, model)
+        if coach:
+            coach_event(
+                model=model,
+                all_parents=all_parents,
+                attributes=attributes,
+                current_row=current_row,
+                outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
+            )
+
 
 if __name__ == '__main__':
     main()
