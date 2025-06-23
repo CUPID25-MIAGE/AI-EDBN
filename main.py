@@ -13,11 +13,11 @@ import Predictions.setting
 import Data
 from Utils.LogFile import LogFile
 from explanation import *
-import pandas as pd
+from helper import *
 
 
 #CONFIGURATION
-DATASET_NAME = "events_with_context"
+DATASET_NAME = "train"
 SETTINGS = Predictions.setting.DBN
 
 
@@ -33,20 +33,6 @@ def train_model(log):
     return train(log)
 
 
-def predict_next_event_row(log, model): #used for testing the model
-    print("=== TEST: Predict next event for a single row ===")
-    context_row = log.contextdata.iloc[-1:]
-    row_tuple = list(context_row.iterrows())[0]
-
-    true_val, predicted_val, confidence, true_prob = predict_next_event_row(
-        row_tuple, log, model=model, activity=log.activity
-    )
-
-    print("True next event:", log.convert_int2string(log.activity, true_val))
-    print("Predicted event:", log.convert_int2string(log.activity, predicted_val))
-    print("Confidence:", confidence)
-    print("Probability assigned to true label:", true_prob)
-
 
 def get_current_row(log, model, activity_attr):
     latest_case_id = log.contextdata.iloc[-1:]["case"].iloc[0]
@@ -59,67 +45,47 @@ def get_current_row(log, model, activity_attr):
     return current_row, attributes, all_parents, trace
 
 
-def predict_suffix_threshold(log, model): # ------> function to use for prediction
-    #print("=== TEST: Predict case suffix with loop threshold ===")
-    #print("event mapping:", log.values["event"])
-    #learn duplicate events threshold
+def predict_suffix(log, model): # ------> function to use for prediction
     model.duplicate_events = {}
     current_row, attributes, all_parents, trace = get_current_row(log, model, log.activity)
-    predicted_event_int, predicted_event_str, prob_event = predict_event(
+    predicted_event_int, predicted_event_str, prob_event, explanation = predict_event(
         log,
         all_parents=all_parents,
         attributes=attributes,
         current_row=current_row,
-        model=model,
-        activity_attr=log.activity,
-        end_event=log.convert_string2int(log.activity, "END")
+        model=model
     )
-    #print("model.variables = ",model.variables)
-    #print("attributes: ",attributes)
 
-    if predicted_event_int:
+    if filter_check(predicted_event_str): 
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
+        print("Explanation: ",explanation)
     else:
-        print("No prediction made for suffix.")
+        print("No action to be done.")
 
-    #---------------coach
-    coach_event(
-        model=model,
-        all_parents=all_parents,
-        attributes=attributes,
-        current_row=current_row
-    )
+    return all_parents, attributes, current_row
+    
 
-    #---------------predict again
-    current_row, attributes, all_parents, trace = get_current_row(log, model, log.activity)
-    predicted_event_int, predicted_event_str, prob_event = predict_event(
-        log,
-        all_parents=all_parents,
-        attributes=attributes,
-        current_row=current_row,
-        model=model,
-        activity_attr=log.activity,
-        end_event=log.convert_string2int(log.activity, "END")
-    )
-
-    if predicted_event_int:
-        print("Predicted next event (code):", predicted_event_int)
-        print("Predicted next event:", predicted_event_str)
-        print("Probability of next event:", prob_event)
-    else:
-        print("No prediction made for suffix.")
-
+coach = True #TO DO: for testing : should be set dynamically (reconnaissance vocale)
 
 def main():
     print("===== START PROCESS =====")
+    #executed once
     log = prepare_data()
     model = train_model(log)
 
-    #predict_next_event_row(log, model)
-    predict_suffix_threshold(log, model)
-
+    #TO DO: while true:
+    #TO DO: if event received:
+    all_parents, attributes, current_row = predict_suffix(log, model)
+    if coach:
+        coach_event(
+            model=model,
+            all_parents=all_parents,
+            attributes=attributes,
+            current_row=current_row,
+            outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
+        )
 
 if __name__ == '__main__':
     main()

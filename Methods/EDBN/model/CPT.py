@@ -23,22 +23,18 @@ class CPT(ConditionalTable):
         return self.cpt.keys()
 
     def get_values(self, parent_val):
-        print("* inside CPT, parent_val is: ",parent_val)
-        print(f"* parent count of {parent_val} is: {self.parent_count[parent_val]}")
-        print(f"* count of possible outcomes for parent {parent_val} :  {self.cpt[parent_val]}")
+        #print("* inside CPT, parent_val is: ",parent_val)
+        #print(f"* parent count of {parent_val} is: {self.parent_count[parent_val]}")
+        #print(f"* count of possible outcomes for parent {parent_val} :  {self.cpt[parent_val]}")
         output = {}
         if len(parent_val) == 1:
             parent_val = parent_val[0]
         for val, count in self.cpt[parent_val].items():
             output[val] = count / self.parent_count[parent_val]
-            print(f"P({val}) = {output[val]}")
-        print("----------------end CPT------------------\n")
+            #print(f"P({val}) = {output[val]}")
+        #print("----------------end CPT------------------\n")
         return output
         # return self.cpt[parent_val]
-
-   
-
-
 
     def train(self, log):
         self.cpt = {}

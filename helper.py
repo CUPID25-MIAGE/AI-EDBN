@@ -1,5 +1,5 @@
 def filter_check(data_to_filter): #return false if the result should be filtered out
-    filter_event_to_block = ["doorOpened","doorClosed", "sunUp", "sunDown", "nicolasDetected", "nicolasNotDected"]
+    filter_event_to_block = ["doorOpened","doorClosed", "sunUp", "sunDown", "nicolasDetected", "nicolasNotDected", "0"] #0 -> no prediction
     return not (data_to_filter in filter_event_to_block)
 
 

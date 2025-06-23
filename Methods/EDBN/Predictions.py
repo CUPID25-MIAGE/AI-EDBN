@@ -86,7 +86,7 @@ def get_probabilities(variable, val_tuple, parents):
     """
     
     if variable.conditional_table.check_parent_combination(val_tuple):
-        print("inside get probabilities : tuple exists in cpt as a parent combiantion")
+        #print("inside get probabilities : tuple exists in cpt as a parent combiantion")
         #print("***** INSIDE get_probabilities: *****") 
         #print("- variable: ",variable)
         #print("--> cond table: ", variable.conditional_table)
@@ -109,7 +109,7 @@ def get_probabilities(variable, val_tuple, parents):
         return probs, False
         # return variable.conditional_table.get_values(val_tuple), False
     else:
-        print("inside get probabilities : its an unseen combo")
+        #print("inside get probabilities : its an unseen combo")
         unseen_value = False
         value_combinations = []
         known_attributes_indexes = None
@@ -167,7 +167,12 @@ def prob_unseen_combination(variable, val_tuple, parents):
     if len(predictions) > 0:
         return predictions, True
     else:
-        return {0: 0}, True
+        #fallback -> most frequent event
+        if variable.value_counts:
+            most_common = max(variable.value_counts.items(), key=lambda x: len(x[1]))[0]
+            return {most_common: 1.0}, True
+        else:
+            return {}, True 
 
 
 def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attribute_i, value_combinations):
@@ -204,7 +209,11 @@ def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attrib
     if len(predictions) > 0:
         return predictions, True
     else:
-        return {0: 0}, True
+        #fallback -> most frequent event
+        if variable.value_counts:
+            most_common = max(variable.value_counts.items(), key=lambda x: len(x[1]))[0]
+            return {most_common: 1.0}, True
+        return {}, True
 
 
 def predict_next_event(edbn_model, log):
@@ -399,18 +408,16 @@ def predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row,
     :param end_event: event indicating end of a trace
     :return: updated current_row
     """
-    print("\n--- STARTING predict_case_suffix_loop_threshold ---")
-    print(f"Attributes: {attributes}")
-    print(f"Activity attribute: {activity_attr}")
-    print(f"End event: {end_event}")
-    print(f"Current row (k-context):")
-    for k in sorted(current_row.keys()):
-        print(f"  t-{k}: {current_row[k]}")
-
-    print("\nAll parents mapping:")
- 
-    print(all_parents.items())
-    print(f"\nModel variables: {[name for name, _ in model.iterate_variables()]}")
+    #print("\n--- STARTING predict_case_suffix_loop_threshold ---")
+    #print(f"Attributes: {attributes}")
+    #print(f"Activity attribute: {activity_attr}")
+    #print(f"End event: {end_event}")
+    #print(f"Current row (k-context):")
+    #for k in sorted(current_row.keys()):
+    #    print(f"  t-{k}: {current_row[k]}")
+    #print("\nAll parents mapping:")
+    #print(all_parents.items())
+    #print(f"\nModel variables: {[name for name, _ in model.iterate_variables()]}")
 
     predicted_rows = []
     repeated_event = [None]
@@ -425,67 +432,129 @@ def predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row,
         current_row[0] = [None] * len(all_parents)
 
         for attr in attributes:
+            #print("\n\n\n attr : ",attr)
             value = []
             for parent_detail in all_parents[attr]:
                 value.append(current_row[parent_detail["k"]][attributes.index(parent_detail["name"])])
             tuple_val = tuple(value)
-            print("\n\n\ntuple_val is : ",tuple_val)
-            if next_row and attr == activity_attr:
-               
-                print("all_parents : ",all_parents)
-
+            #print("\n\n\ntuple_val is : ",tuple_val)
             probs, unknown = get_probabilities(model.variables[attr], tuple_val, [v["variable"] for v in all_parents[attr]])
-
+            #print(f"probs is : {probs}")
 
             if unknown:
                 unknown_value = True
 
-            if 0 not in probs:
-                max_val = None
-                max_prob = 0
-                for val, prob in probs.items():
-                    duplicate_threshold = model.duplicate_events.get(val, 1)
-                    if val!=last_event and ((prob > max_prob and attr != activity_attr) or \
-                    (prob > max_prob and attr == activity_attr and repeated_event[0] != val) or \
-                    (prob > max_prob and attr == activity_attr and len(repeated_event) <= duplicate_threshold)):
-                        max_prob = prob
-                        max_val = val
+            max_val = 0
+            max_prob = 0
+            for val, prob in probs.items():
+                duplicate_threshold = model.duplicate_events.get(val, 1)
+                if val!=last_event and ((prob > max_prob and attr != activity_attr) or \
+                (prob > max_prob and attr == activity_attr and repeated_event[0] != val) or \
+                (prob > max_prob and attr == activity_attr and len(repeated_event) <= duplicate_threshold)):
+                    max_prob = prob
+                    max_val = val
 
-                current_row[0][attributes.index(attr)] = max_val
-
-                #saving the probability of each event ()
-                #activity_attr is the event attr, we don't need the sunUp/sunDown one
-                if attr == activity_attr and max_val is not None and next_row:
-                    activity_probabilities = probs
-                    #print(activity_probabilities)
-                    next_row=False
-                
-            else:
-                current_row[0][attributes.index(activity_attr)] = end_event
+            current_row[0][attributes.index(attr)] = max_val
+            #print(f"** current_row[0][attributes.index({attr})] = {max_val}")
+            #saving the probability of each event ()
+            #activity_attr is the event attr, we don't need the sunUp/sunDown one
+            if attr == activity_attr and max_val is not None and next_row:
+                activity_probabilities = probs
+                #print(f"possible activities for next row are: {activity_probabilities}")
+                next_row=False
 
         if current_row[0][0] == repeated_event[0]:
             repeated_event.append(current_row[0][0])
         else:
             repeated_event = [current_row[0][0]]
 
+       
         predicted_rows.append(current_row[0][:])
+        #print("\n\n****************************appnding to prediction : ")
+        #print(predicted_rows)
+    #print("current row after predicting: ")
+    #for k in sorted(current_row.keys()):
+    #    print(f"  t-{k}: {current_row[k]}")
+    #print("!!!!!!!!!!!!! predicted rows are: ")
+    #print(predicted_rows)
         
     return predicted_rows, activity_probabilities, unknown_value
 
 
-def predict_event(log, all_parents, attributes, current_row, model, activity_attr, end_event):
-    predicted_rows, probs, _ = predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row, model, activity_attr, end_event)
-    if not predicted_rows:
-        print("No predictions were made.")
-        return None, None, 0.0
-    predicted_event_int = predicted_rows[0][0]
-    predicted_event_str = log.convert_int2string(log.activity, predicted_event_int)
+def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
+    """
+    Predict the first row suffix for a case, given the latest known row(s)
+    Selecting values with highest probability + Only allowing a limited amount of repetition of a single event
+
+    :param log: the LogFile
+    :param all_parents: detailed dict of attribute → parent list
+    :param attributes: ordered list of attribute names
+    :param current_row: dict {0: [...], 1: [...], 2: [...]} with recent history (k steps)
+    :param model: trained EDBN model
+    :return: (max_val (predicted event), activity_probabilities, explanation, unknown_value)
+    """
+    #print("\n--- STARTING predict_case_first_suffix ---")
+    activity_attr = log.activity  #only predict the main activity, not context (sunUp)
+    #print("Current row (k-context):")
+    #for k in sorted(current_row.keys()):
+    #    print(f"  t-{k}: {current_row[k]}")
+    #init
+    activity_index = attributes.index(activity_attr)
+    unknown_value = False
+    last_event = current_row[0][activity_index] #the last event that occured, prediction should be different from it
+    explanation = ""
+    parent_info = []
+    value = []
+    #building parent tuple
+    for parent in all_parents[activity_attr]:
+        val = current_row[parent["k"]][attributes.index(parent["name"])]
+        value.append(val)
+        val_str = log.convert_int2string(parent["name"], val)
+        parent_info.append(f"{parent['name']}@t-{parent['k']}='{val_str}'")
+    tuple_val = tuple(value)
+    #print(f"Parent tuple is: {tuple_val}")
+    probs, unknown = get_probabilities(
+        model.variables[activity_attr],
+        tuple_val,
+        [v["variable"] for v in all_parents[activity_attr]]
+    )
+    #print(f"probs is: {probs}")
+    #print("last_event : ",last_event)
+    if unknown:
+        unknown_value = True
+    #pick the most probable outcome (probability is maximum)
+    max_val = 0
+    max_prob = 0
+    for val, prob in probs.items():
+        if val != last_event and prob > max_prob:
+            max_prob = prob
+            max_val = val
+    predicted_str = log.convert_int2string(activity_attr, max_val)
+    explanation = (
+        f"Predicted event '{predicted_str}' because parent values "
+        f"[{', '.join(parent_info)}] led to the highest probability ({max_prob:.2f})."
+    )
+    #print(f"** current_row[0][attributes.index({activity_attr})] = {max_val}")
+    #print(f"Possible activities for next row are: {probs}")
+    #print("Current row after predicting:")
+    #for k in sorted(current_row.keys()):
+    #    print(f"  t-{k}: {current_row[k]}")
+    #print("!!!!!!!!!!!!! Final predicted event:")
+    #print(predicted_event)
+    return max_val, predicted_str, probs, explanation, unknown_value
+
+
+def predict_event(log, all_parents, attributes, current_row, model):
+    print("\nPREDICTING...")
+    predicted_event_int, predicted_event_str, probs, explanation, _ = predict_case_first_suffix(log,all_parents, attributes, current_row, model)
+    if not predicted_event_int:
+        return 0, "0", 0.0, ""
     prob_predicted_event = probs[predicted_event_int]
     print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\nPossible events: ", [(log.convert_int2string(log.activity, k), v) for k, v in probs.items()])
-    return predicted_event_int, predicted_event_str, prob_predicted_event
+    return predicted_event_int, predicted_event_str, prob_predicted_event, explanation
 
 
-def coach_event(model, all_parents, attributes, current_row, target_attribute="event", outcome=5):
+def coach_event(model, all_parents, attributes, current_row, outcome, target_attribute="event"):
     """
     Force the model to assign probability 1.0 to `outcome` for the parent combination derived
     from the current_row and all_parents for the given target_attribute.
@@ -494,19 +563,23 @@ def coach_event(model, all_parents, attributes, current_row, target_attribute="e
     - model: the EDBN model
     - all_parents: dict of parent info
     - attributes: list of all attribute names
-    - current_row: dictionary holding k-context (e.g., {0: [...], 1: [...], 2: [...]})
+    - current_row: dictionary holding k-context (e.g., {0: [...], 1: [...], 2: [...]}), used for retrieving parent tuple
+    - outcome: the value to force as the only possible result (int code of event)
     - target_attribute: attribute whose CPT you want to modify
-    - outcome: the value to force as the only possible result
     """
+    print("\nCOACHING...")
     variable = model.get_variable(target_attribute)
     cpt = variable.conditional_table
 
-    # Build the parent_val tuple using the expected parent layout
-    parent_val = (4, 5, 1)
+    #creating the parent_val tuple
+    value = []
+    for parent_detail in all_parents[target_attribute]:
+        value.append(current_row[parent_detail["k"]][attributes.index(parent_detail["name"])])
+    parent_val = tuple(value)
 
-    print("variable:", variable)
-    print("cpt parent count keys:", list(cpt.parent_count.keys()))
-    print("parent_val to coach:", parent_val)
+    #print("variable:", variable)
+    #print("cpt parent count keys:", list(cpt.parent_count.keys()))
+    #print("parent_val to coach:", parent_val)
 
     if parent_val not in cpt.parent_count:
         print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
@@ -517,57 +590,8 @@ def coach_event(model, all_parents, attributes, current_row, target_attribute="e
         count = cpt.parent_count[parent_val]
         cpt.cpt[parent_val] = {outcome: count}
 
-    print(f"Coached CPT: {cpt.cpt[parent_val]} (prob=1.0)")
+    print(f"Coached CPT: {cpt.cpt[parent_val]} (prob=1.0)\n")
 
-
-
-def fail_coach_event(model, target_attribute="event", parent_val=(10,1), outcome=5):
-    """
-    Force the model to assign probability 1.0 to `outcome` for the given `parent_val` combination
-    on the specified attribute.
-
-    Parameters:
-    - model: the trained EDBN model
-    - target_attribute: the name of the attribute being coached (default 'event')
-    - parent_val: tuple or int representing the parent combination
-    - outcome: int (the value to assign probability 1 to)
-    """
-    variable = model.get_variable(target_attribute)
-    cpt = variable.conditional_table
-    print("variable: ",variable)
-    print("cpt is: ",cpt)
-    print("cpt parent count: ", cpt.parent_count)
-
-    #normalize single-parent keys
-    if isinstance(parent_val, tuple) and len(parent_val) == 1:
-        parent_val = parent_val[0]
-
-    #check that the parent_val exists
-    if parent_val not in cpt.parent_count:
-        print(f"WARNING: parent_val {parent_val} not found in CPT — cannot coach.")
-        return
-
-    count = cpt.parent_count[parent_val]
-
-    #force the outcome
-    cpt.cpt[parent_val] = {outcome: count}
-    print(f"Coached CPT: {parent_val} -> {outcome} (prob=1.0)")
-
-
-def coach(model, all_parents, attributes, outcome):
-    """
-        model: edbn model
-        all_parents: combination of parents events 
-        attributes: parent attributes
-        outcome: coeached event code (int)
-    """
-
-    value = []
-    #for parent_detail in all_parents["event"]:
-    #    value.append(current_row[parent_detail["k"]][attributes.index(parent_detail["name"])])
-    #tuple_val = tuple(value)
-    tuple_val = (10, 1)
-    coach_event(tuple_val, outcome)
 
 def get_prediction_attributes(model, activity_attribute):
     """
