@@ -9,6 +9,34 @@ import numpy as np
 
 LAMBDA = 1
 
+VALUE_MAPS = {
+    "sunUp": {
+        0: "il fait nuit",
+        1: "il fait jour"
+    },
+    "event": {
+        "sunUp": "il fait jour",
+        "sunDown": "il fait nuit",
+        "doorOpened": "porte ouverte",
+        "doorClosed": "porte fermée",
+        "lampOn": "lampe allumée",
+        "lampOff": "lampe éteinte",
+        "presenceOn": "présence détectée",
+        "presenceOff": "aucune présence",
+        "blindsOpen": "volets ouverts",
+        "blindsClosed": "volets fermés",
+        "musicOn": "musique lancée",
+        "musicOff": "musique arrêtée",
+        "nicolasDetected": "Nicolas détecté",
+        "nicolasNotDected": "Nicolas non détecté"
+    }
+}
+
+def describe_value(attr_name, val, log):
+    val_str = log.convert_int2string(attr_name, val) if attr_name == log.activity else val
+    if val_str in VALUE_MAPS[attr_name]:
+        return VALUE_MAPS[attr_name].get(val_str, f"[{val_str}]")
+    return val_str
 
 def test(model, log):
     return predict_next_event(model, log)
@@ -480,7 +508,6 @@ def predict_case_suffix_loop_threshold(log,all_parents, attributes, current_row,
         
     return predicted_rows, activity_probabilities, unknown_value
 
-
 def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     """
     Predict the first row suffix for a case, given the latest known row(s)
@@ -493,6 +520,7 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     :param model: trained EDBN model
     :return: (max_val (predicted event), activity_probabilities, explanation, unknown_value)
     """
+    print("current row input: ", current_row)
     #print("\n--- STARTING predict_case_first_suffix ---")
     activity_attr = log.activity  #only predict the main activity, not context (sunUp)
     #print("Current row (k-context):")
@@ -502,15 +530,21 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     activity_index = attributes.index(activity_attr)
     unknown_value = False
     last_event = current_row[0][activity_index] #the last event that occured, prediction should be different from it
+    
+    print("last event: ")
+    print(last_event)
+    
     explanation = ""
     parent_info = []
     value = []
+    print("all parents: ", all_parents)
     #building parent tuple
     for parent in all_parents[activity_attr]:
         val = current_row[parent["k"]][attributes.index(parent["name"])]
         value.append(val)
-        val_str = log.convert_int2string(parent["name"], val)
-        parent_info.append(f"{parent['name']}@t-{parent['k']}='{val_str}'")
+        val_str = describe_value(parent["name"], val, log)
+        parent_info.append(f"{val_str}")
+        print("parent: ", val_str)
     tuple_val = tuple(value)
     #print(f"Parent tuple is: {tuple_val}")
     probs, unknown = get_probabilities(
@@ -530,9 +564,10 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
             max_prob = prob
             max_val = val
     predicted_str = log.convert_int2string(activity_attr, max_val)
+
     explanation = (
-        f"Predicted event '{predicted_str}' because parent values "
-        f"[{', '.join(parent_info)}] led to the highest probability ({max_prob:.2f})."
+        f"J'ai prédit '{predicted_str}' avec une probabilité de {max_prob:.2f} "
+        f"car les événements précédents dans l'ordre étaient {' puis '.join(reversed(parent_info))}."
     )
     #print(f"** current_row[0][attributes.index({activity_attr})] = {max_val}")
     #print(f"Possible activities for next row are: {probs}")
@@ -545,7 +580,7 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
 
 
 def predict_event(log, all_parents, attributes, current_row, model):
-    print("\nPREDICTING...")
+    print("PREDICTING...")
     predicted_event_int, predicted_event_str, probs, explanation, _ = predict_case_first_suffix(log,all_parents, attributes, current_row, model)
     if not predicted_event_int:
         return 0, "0", 0.0, ""
@@ -567,7 +602,6 @@ def coach_event(model, all_parents, attributes, current_row, outcome, target_att
     - outcome: the value to force as the only possible result (int code of event)
     - target_attribute: attribute whose CPT you want to modify
     """
-    print("\nCOACHING...")
     variable = model.get_variable(target_attribute)
     cpt = variable.conditional_table
 
@@ -582,7 +616,7 @@ def coach_event(model, all_parents, attributes, current_row, outcome, target_att
     #print("parent_val to coach:", parent_val)
 
     if parent_val not in cpt.parent_count:
-        print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
+        #print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
         cpt.cpt[parent_val] = {outcome: 1}
         cpt.parent_count[parent_val] = 1
     else:
@@ -590,7 +624,7 @@ def coach_event(model, all_parents, attributes, current_row, outcome, target_att
         count = cpt.parent_count[parent_val]
         cpt.cpt[parent_val] = {outcome: count}
 
-    print(f"Coached CPT: {cpt.cpt[parent_val]} (prob=1.0)\n")
+    print(f"Coached CPT: new possible outcome events dictionary {cpt.cpt[parent_val]} => (prob({outcome})=1.0)\n")
 
 
 def get_prediction_attributes(model, activity_attribute):

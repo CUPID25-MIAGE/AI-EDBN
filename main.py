@@ -15,7 +15,7 @@ from helper import *
 
 
 #CONFIGURATION
-DATASET_NAME = "train"
+DATASET_NAME = "ivana_csv_v2"
 SETTINGS = Predictions.setting.DBN
 
 
@@ -36,6 +36,7 @@ def get_current_row(log, model, activity_attr):
     latest_case_id = log.contextdata.iloc[-1:]["case"].iloc[0]
     trace = log.get_cases().get_group(latest_case_id)
     all_parents, attributes = get_prediction_attributes(model, activity_attr)
+    print("all_parents: ", all_parents)
     current_row = {
         i: [getattr(trace.iloc[-(i + 1)], attr) if len(trace) > i else 0 for attr in attributes]
         for i in range(log.k + 1)
@@ -46,6 +47,8 @@ def get_current_row(log, model, activity_attr):
 def predict_suffix(log, model): # ------> function to use for prediction
     model.duplicate_events = {}
     current_row, attributes, all_parents, trace = get_current_row(log, model, log.activity)
+    print("current row is: ")
+    print(current_row)
     predicted_event_int, predicted_event_str, prob_event, explanation = predict_event(
         log,
         all_parents=all_parents,
@@ -62,14 +65,15 @@ def predict_suffix(log, model): # ------> function to use for prediction
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
-        print("Explanation: ",explanation)
+        #print("Explanation: ",explanation)
     else:
-        print("No action to be done.")
+        print(f"Predicted {predicted_event_str}, no action to be done.")
 
-    return all_parents, attributes, current_row
+    return all_parents, attributes, current_row, explanation
     
 
-coach = True #TO DO: for testing : should be set dynamically (reconnaissance vocale)
+coach = False #TO DO: for testing : should be set dynamically (reconnaissance vocale)
+explain = True #TO DO: shpould be set dynamically from voice
 
 def main():
     print("===== START PROCESS =====")
@@ -79,15 +83,27 @@ def main():
 
     #TO DO: while true:
     #TO DO: if event received:
-    all_parents, attributes, current_row = predict_suffix(log, model)
+    all_parents, attributes, current_row, explanation = predict_suffix(log, model)
+    #TEST explanation
+    if explain:
+            #TO DO: say the explanation
+            print("Explanation: ",explanation)
+    #TEST event
     if coach:
+        coachedEvent = "lampOn"
+        print(f"\nCOACHING... \n- Coached event = {coachedEvent}")
+        coachedEvent = log.convert_string2int(log.activity, coachedEvent)
+        print(f"- Coached event (code) = {coachedEvent}")
         coach_event(
             model=model,
             all_parents=all_parents,
             attributes=attributes,
             current_row=current_row,
-            outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
+            outcome=coachedEvent #TO DO: example, on recupere ca de la reconnaissance vocale
         )
+        #predict again to check outcome
+        all_parents, attributes, current_row, explanation = predict_suffix(log, model)
+
 
 def mainV2():
     print("===== START PROCESS =====")
@@ -99,8 +115,12 @@ def mainV2():
     #TO DO: if event received:
     while(True):
         csvName = input("enter csv name to predict (or 'exit' to quit): ")
+        #csvName = 'log_' + log_date + '.csv'
         csvLog = prepare_data(csvName)
-        all_parents, attributes, current_row = predict_suffix(csvLog, model)
+        all_parents, attributes, current_row, explanation = predict_suffix(csvLog, model)
+        if explain:
+            #TO DO: say the explanation
+            print("Explanation: ",explanation)
         if coach:
             coach_event(
                 model=model,
@@ -109,7 +129,6 @@ def mainV2():
                 current_row=current_row,
                 outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
             )
-
 
 if __name__ == '__main__':
     main()
