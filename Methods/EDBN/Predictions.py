@@ -8,6 +8,34 @@ import re
 import numpy as np
 
 LAMBDA = 1
+VALUE_MAPS = {
+    "sunUp": {
+        0: "il fait nuit",
+        1: "il fait jour"
+    },
+    "event": {
+        "sunUp": "il fait jour",
+        "sunDown": "il fait nuit",
+        "doorOpened": "porte ouverte",
+        "doorClosed": "porte fermée",
+        "lampOn": "lampe allumée",
+        "lampOff": "lampe éteinte",
+        "presenceOn": "présence détectée",
+        "presenceOff": "aucune présence",
+        "blindsOpen": "volets ouverts",
+        "blindsClosed": "volets fermés",
+        "musicOn": "musique lancée",
+        "musicOff": "musique arrêtée",
+        "nicolasDetected": "Nicolas détecté",
+        "nicolasNotDected": "Nicolas non détecté"
+    }
+}
+
+def describe_value(attr_name, val, log):
+    val_str = log.convert_int2string(attr_name, val) if attr_name == log.activity else val
+    if val_str in VALUE_MAPS[attr_name]:
+        return VALUE_MAPS[attr_name].get(val_str, f"[{val_str}]")
+    return val_str
 
 
 def test(model, log):
@@ -501,8 +529,8 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     for parent in all_parents[activity_attr]:
         val = current_row[parent["k"]][attributes.index(parent["name"])]
         value.append(val)
-        val_str = log.convert_int2string(parent["name"], val)
-        parent_info.append(f"{parent['name']}@t-{parent['k']}='{val_str}'")
+        val_str = describe_value(parent["name"], val, log)
+        parent_info.append(f"{val_str}")
     tuple_val = tuple(value)
     #print(f"Parent tuple is: {tuple_val}")
     probs, unknown = get_probabilities(
@@ -523,8 +551,8 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
             max_val = val
     predicted_str = log.convert_int2string(activity_attr, max_val)
     explanation = (
-        f"Predicted event '{predicted_str}' because parent values "
-        f"[{', '.join(parent_info)}] led to the highest probability ({max_prob:.2f})."
+        f"J'ai prédit '{predicted_str}' avec une probabilité de {max_prob:.2f} "
+        f"car les événements précédents dans l'ordre étaient {' puis '.join(reversed(parent_info))}."
     )
     #print(f"** current_row[0][attributes.index({activity_attr})] = {max_val}")
     #print(f"Possible activities for next row are: {probs}")
@@ -582,7 +610,7 @@ def coach_event(model, all_parents, attributes, current_row, outcome, target_att
         count = cpt.parent_count[parent_val]
         cpt.cpt[parent_val] = {outcome: count}
 
-    print(f"Coached CPT: {cpt.cpt[parent_val]} (prob=1.0)\n")
+    print(f"Coached CPT: new possible outcome events dictionary {cpt.cpt[parent_val]} => (prob({outcome})=1.0)\n")
 
 
 def get_prediction_attributes(model, activity_attribute):

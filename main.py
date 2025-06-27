@@ -15,7 +15,7 @@ from helper import *
 from datetime import datetime
 
 #CONFIGURATION
-DATASET_NAME = "ivana_csv_v2"
+DATASET_NAME = "train"
 SETTINGS = Predictions.setting.DBN
 
 
