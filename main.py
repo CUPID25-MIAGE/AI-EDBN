@@ -1,4 +1,3 @@
-from explanation import explain_last_prediction
 from Methods.EDBN import Predictions as edbn_predict
 from Methods.EDBN.Train import train
 from Methods.EDBN.Predictions import (
@@ -12,18 +11,17 @@ from Methods.EDBN.Predictions import (
 import Predictions.setting
 import Data
 from Utils.LogFile import LogFile
-from explanation import *
 from helper import *
-
+from datetime import datetime
 
 #CONFIGURATION
-DATASET_NAME = "train"
+DATASET_NAME = "ivana_csv_v2"
 SETTINGS = Predictions.setting.DBN
 
 
-def prepare_data():
+def prepare_data(log=DATASET_NAME):
     print("PREPARE DATA")
-    data_object = Data.get_data(DATASET_NAME)
+    data_object = Data.get_data(log)
     data_object.prepare(SETTINGS)
     return data_object.logfile
 
@@ -44,10 +42,7 @@ def get_current_row(log, model, activity_attr):
     }
     return current_row, attributes, all_parents, trace
 
-
-def predict_suffix(log, model): # ------> function to use for prediction
-    model.duplicate_events = {}
-    current_row, attributes, all_parents, trace = get_current_row(log, model, log.activity)
+def predict_suffix(log, model, all_parents, attributes, current_row): # ------> function to use for prediction
     predicted_event_int, predicted_event_str, prob_event, explanation = predict_event(
         log,
         all_parents=all_parents,
@@ -56,28 +51,42 @@ def predict_suffix(log, model): # ------> function to use for prediction
         model=model
     )
 
-    if filter_check(predicted_event_str): 
+    if filter_check(predicted_event_str):
+        #current_datetime = datetime.now()
+        #formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        #add_new_row_csv([formatted_datetime,predicted_event_str, 0])
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
-        print("Explanation: ",explanation)
     else:
-        print("No action to be done.")
+        print(f"Predicted {predicted_event_str}, no action to be done.")
 
-    return all_parents, attributes, current_row
+    return all_parents, attributes, current_row, explanation
     
 
-coach = True #TO DO: for testing : should be set dynamically (reconnaissance vocale)
+coach = False #TO DO: for testing : should be set dynamically (reconnaissance vocale)
+explain = True
 
 def main():
     print("===== START PROCESS =====")
     #executed once
     log = prepare_data()
     model = train_model(log)
+    model.duplicate_events = {}
 
     #TO DO: while true:
     #TO DO: if event received:
-    all_parents, attributes, current_row = predict_suffix(log, model)
+    realtime= prepare_data("realtime")
+    current_row, attributes, all_parents, trace = get_current_row(realtime, model, realtime.activity)
+    all_parents, attributes, current_row, explanation = predict_suffix(
+        log,
+        model,
+        all_parents=all_parents,
+        attributes=attributes,
+        current_row=current_row
+    )
+    if explain:
+        print("Explanation: ",explanation)
     if coach:
         coach_event(
             model=model,

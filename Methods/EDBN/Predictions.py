@@ -167,12 +167,7 @@ def prob_unseen_combination(variable, val_tuple, parents):
     if len(predictions) > 0:
         return predictions, True
     else:
-        #fallback -> most frequent event
-        if variable.value_counts:
-            most_common = max(variable.value_counts.items(), key=lambda x: len(x[1]))[0]
-            return {most_common: 1.0}, True
-        else:
-            return {}, True 
+        return {0: 0}, True
 
 
 def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attribute_i, value_combinations):
@@ -209,11 +204,7 @@ def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attrib
     if len(predictions) > 0:
         return predictions, True
     else:
-        #fallback -> most frequent event
-        if variable.value_counts:
-            most_common = max(variable.value_counts.items(), key=lambda x: len(x[1]))[0]
-            return {most_common: 1.0}, True
-        return {}, True
+        return {0: 0}, True
 
 
 def predict_next_event(edbn_model, log):
@@ -493,6 +484,7 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     :param model: trained EDBN model
     :return: (max_val (predicted event), activity_probabilities, explanation, unknown_value)
     """
+    print("parents: ",all_parents)
     #print("\n--- STARTING predict_case_first_suffix ---")
     activity_attr = log.activity  #only predict the main activity, not context (sunUp)
     #print("Current row (k-context):")
