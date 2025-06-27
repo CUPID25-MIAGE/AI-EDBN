@@ -635,6 +635,7 @@ def get_prediction_attributes(model, activity_attribute):
     :param activity_attribute:
     :return:
     """
+    print("INSIDE get_prediction_attributes -> activity_attribute : ", activity_attribute)
     prev_pattern = re.compile(r"_Prev[0-9]*")
     all_parents = {}
     to_check = [activity_attribute]
