@@ -32,10 +32,10 @@ def train_model(log):
 
 
 
-def get_current_row(log, model, activity_attr):
+def get_current_row(log, model):
     latest_case_id = log.contextdata.iloc[-1:]["case"].iloc[0]
     trace = log.get_cases().get_group(latest_case_id)
-    all_parents, attributes = get_prediction_attributes(model, activity_attr)
+    all_parents, attributes = get_prediction_attributes(model, log.activity)
     current_row = {
         i: [getattr(trace.iloc[-(i + 1)], attr) if len(trace) > i else 0 for attr in attributes]
         for i in range(log.k + 1)
@@ -78,7 +78,7 @@ def main():
     #TO DO: while true:
     #TO DO: if event received:
     realtime= prepare_data("realtime", log.values)
-    current_row, attributes, all_parents, trace = get_current_row(realtime, model, realtime.activity)
+    current_row, attributes, all_parents, trace = get_current_row(realtime, model)
     all_parents, attributes, current_row, explanation = predict_suffix(
         log,
         model,
@@ -107,8 +107,18 @@ def mainV2():
     #TO DO: if event received:
     while(True):
         csvName = input("enter csv name to predict (or 'exit' to quit): ")
-        csvLog = prepare_data(csvName)
-        all_parents, attributes, current_row = predict_suffix(csvLog, model)
+        csvLog = prepare_data(csvName, log.values)
+        current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+        all_parents, attributes, current_row, explanation = predict_suffix(
+            log,
+            model,
+            all_parents=all_parents,
+            attributes=attributes,
+            current_row=current_row
+        )
+        if explain:
+            print("Explanation: ",explanation)
+            #speak(explanation)
         if coach:
             coach_event(
                 model=model,
@@ -120,4 +130,4 @@ def mainV2():
 
 
 if __name__ == '__main__':
-    main()
+    mainV2()

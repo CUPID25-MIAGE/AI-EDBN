@@ -1,5 +1,3 @@
 case,completeTime,event,sunUp
 1,2025-01-01 01:06:00,presenceOn,0
 1,2025-01-01 01:11:00,doorOpened,0
-1,2025-01-01 01:12:00,nicolasNotDected,0
-1,2025-01-01 01:13:00,doorClosed,0
