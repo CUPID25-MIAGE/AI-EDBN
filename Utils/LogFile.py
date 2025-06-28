@@ -109,7 +109,6 @@ class LogFile:
 
         if self.time is not None and x.name == self.time:
             return x
-        print("x is :",x)
         print("PREPROCESSING: Converting", x.name)
         if x.name not in self.values:
             x = x.astype("str")
