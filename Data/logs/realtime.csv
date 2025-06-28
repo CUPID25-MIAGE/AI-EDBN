@@ -1,0 +1,6 @@
+case,completeTime,event,sunUp
+29,2025-06-29 20:38:33,sunDown,0
+29,2025-06-29 20:38:43,doorOpened,0
+29,2025-06-29 20:38:53,presenceOn,0
+29,2025-06-29 20:39:03,nicolasDetected,0
+29,2025-06-29 20:39:43,doorClosed,0

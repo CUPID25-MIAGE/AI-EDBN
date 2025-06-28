@@ -12,8 +12,8 @@ def sun_down():
     return global_variable_sun
 
 def filter_check(data_to_filter): #return false if the result should be filtered out
-    filter_event_to_block = ["doorOpened","doorClosed", "sunUp", "sunDown", "nicolasDetected", "nicolasNotDected", "0"] #0 -> no prediction
-    return data_to_filter not in filter_event_to_block
+    filter_event_to_block = ["doorOpened","doorClosed", "sunUp", "sunDown", "nicolasDetected", "nicolasNotDected", "presenceOn", "presenceOff", "0"] #0 -> no prediction
+    return not (data_to_filter in filter_event_to_block)
 
 
 def get_time_stamp_case_id():
@@ -34,7 +34,7 @@ def add_new_row_csv(row_data):
     if not os.path.exists(filepath):
         with open(filepath, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['case_id','completeTime', 'event','sunUp'])
+            writer.writerow(['case','completeTime', 'event','sunUp'])
             writer.writerow(row_data)
     else :
         with open(filepath, mode='a', newline='') as file:
