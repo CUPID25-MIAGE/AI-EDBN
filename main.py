@@ -15,7 +15,7 @@ from helper import *
 from datetime import datetime
 
 #CONFIGURATION
-DATASET_NAME = "ivana_csv_v2"
+DATASET_NAME = "train"
 SETTINGS = Predictions.setting.DBN
 
 
@@ -89,20 +89,13 @@ def main():
     if explain:
         print("Explanation: ",explanation)
     if coach:
-        coachedEvent = "lampOn"
-        print(f"\nCOACHING... \n- Coached event = {coachedEvent}")
-        coachedEvent = log.convert_string2int(log.activity, coachedEvent)
-        print(f"- Coached event (code) = {coachedEvent}")
         coach_event(
             model=model,
             all_parents=all_parents,
             attributes=attributes,
             current_row=current_row,
-            outcome=coachedEvent #TO DO: example, on recupere ca de la reconnaissance vocale
+            outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
         )
-        #predict again to check outcome
-        all_parents, attributes, current_row, explanation = predict_suffix(log, model)
-
 
 def mainV2():
     print("===== START PROCESS =====")
@@ -134,6 +127,7 @@ def mainV2():
                 current_row=current_row,
                 outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
             )
+
 
 if __name__ == '__main__':
     mainV2()

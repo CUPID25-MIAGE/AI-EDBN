@@ -3,8 +3,4 @@ case,completeTime,event,sunUp
 29,2025-06-29 20:38:43,doorOpened,0
 29,2025-06-29 20:38:53,presenceOn,0
 29,2025-06-29 20:39:03,nicolasDetected,0
-29,2025-06-29 20:39:13,lampOn,0
-30,2025-06-30 20:36:13,sunDown,0
-30,2025-06-30 20:36:23,doorOpened,0
-30,2025-06-30 20:36:33,presenceOn,0
-30,2025-06-30 20:36:43,nicolasDetected,0
+29,2025-06-29 20:39:43,doorClosed,0
