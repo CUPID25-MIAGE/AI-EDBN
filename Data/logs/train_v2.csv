@@ -601,8 +601,3 @@ case,completeTime,event,sunUp
 99,2025-09-07 20:36:15,presenceOn,0
 99,2025-09-07 20:36:26,nicolasDetected,0
 99,2025-09-07 20:36:38,lampOn,0
-99,2025-09-07 20:36:47,doorClosed,0
-100,2025-09-08 20:32:54,sunDown,0
-100,2025-09-08 20:33:05,doorOpened,0
-100,2025-09-08 20:33:19,presenceOn,0
-100,2025-09-08 20:33:29,nicolasDetected,0

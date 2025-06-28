@@ -13,11 +13,12 @@ import math
 
 class LogFile:
 
-    def __init__(self, filename, delim, header, rows, time_attr, trace_attr, activity_attr = None, values = None, integer_input = False, convert = True, k = 1, dtype=None):
+    def __init__(self, filename, delim, header, rows, time_attr, trace_attr, activity_attr = None, values = None, integer_input = False, convert = True, k = 1, dtype=None, mapping={}):
         self.filename = filename
         self.time = time_attr
         self.trace = trace_attr
         self.activity = activity_attr
+        self.mapping = mapping
         if values is not None:
             self.values = values
         else:
@@ -67,7 +68,9 @@ class LogFile:
                 filtered_cases.append(case[1])
         self.data = pd.concat(filtered_cases, ignore_index=True)
 
-    def convert2int(self):
+    def convert2int(self, mapping=None):
+        if mapping:
+            self.values=mapping
         self.convert2ints("../converted_ints.csv")
 
     def convert2ints(self, file_out):
@@ -82,7 +85,7 @@ class LogFile:
         self.data.to_csv(file_out, index=False)
 
     def convert_column2ints(self, x):
-
+        #return elems in a not in b
         def test(a, b):
             # Return all elements from a that are not in b, make use of the fact that both a and b are unique and sorted
             a_ix = 0
@@ -106,7 +109,7 @@ class LogFile:
 
         if self.time is not None and x.name == self.time:
             return x
-
+        print("x is :",x)
         print("PREPROCESSING: Converting", x.name)
         if x.name not in self.values:
             x = x.astype("str")
@@ -120,8 +123,8 @@ class LogFile:
             xsorted = np.argsort(self.values[x.name])
             ypos = np.searchsorted(self.values[x.name][xsorted], x)
             indices = xsorted[ypos]
-
         return indices + 1
+
 
     def convert_string2int(self, column, value):
         if column not in self.values:

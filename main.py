@@ -19,10 +19,10 @@ DATASET_NAME = "train"
 SETTINGS = Predictions.setting.DBN
 
 
-def prepare_data(log=DATASET_NAME):
+def prepare_data(log=DATASET_NAME, event_mapping=None):
     print("PREPARE DATA")
     data_object = Data.get_data(log)
-    data_object.prepare(SETTINGS)
+    data_object.prepare(SETTINGS, event_mapping)
     return data_object.logfile
 
 
@@ -73,10 +73,11 @@ def main():
     log = prepare_data()
     model = train_model(log)
     model.duplicate_events = {}
-
+    print(log.values)
+    event_mapping = log.values[log.activity]
     #TO DO: while true:
     #TO DO: if event received:
-    realtime= prepare_data("realtime")
+    realtime= prepare_data("realtime", log.values)
     current_row, attributes, all_parents, trace = get_current_row(realtime, model, realtime.activity)
     all_parents, attributes, current_row, explanation = predict_suffix(
         log,

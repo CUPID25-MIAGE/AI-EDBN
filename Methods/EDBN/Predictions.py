@@ -525,6 +525,10 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     explanation = ""
     parent_info = []
     value = []
+    
+    current_row[2] = current_row[1]
+    current_row[1] = current_row[0]
+    current_row[0] = [None] * len(all_parents)
     #building parent tuple
     for parent in all_parents[activity_attr]:
         val = current_row[parent["k"]][attributes.index(parent["name"])]
