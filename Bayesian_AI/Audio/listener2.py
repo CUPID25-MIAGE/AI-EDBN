@@ -5,9 +5,8 @@ import vosk
 import json
 import numpy as np
 import scipy.signal
-from datetime import datetime
 
-from HA_communication.Bayesian_AI.Audio.speech_interface import audio_speech_handler  # C’est celle-ci qu’on garde
+from Bayesian_AI.Audio.speech_interface import audio_speech_handler  # C’est celle-ci qu’on garde
 
 MODEL_PATH = "/home/pi/Bayesian_AI/vosk-model-small-fr-0.22"
 INPUT_SAMPLE_RATE = 48000

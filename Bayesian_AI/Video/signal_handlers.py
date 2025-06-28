@@ -1,7 +1,7 @@
 # Video/signal_handlers.py
 
-from HA_communication.Bayesian_AI.DevicesCommunication.signals import EVENT_SIGNAL, EXPLANATION_SIGNAL
-from HA_communication.Bayesian_AI.Audio.speech import speak_text
+from Bayesian_AI.DevicesCommunication.signals import EVENT_SIGNAL, EXPLANATION_SIGNAL
+from Bayesian_AI.Audio.speech import speak_text
 
 # Handler pour l'evenement "nico"
 def handle_event(message):

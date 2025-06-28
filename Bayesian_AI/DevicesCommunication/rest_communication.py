@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import urllib.request
-from HA_communication.Bayesian_AI.DevicesCommunication.event_format import event_format
-from HA_communication.Bayesian_AI.DevicesCommunication.signals import send_event_signal
+from Bayesian_AI.DevicesCommunication.event_format import event_format
+from Bayesian_AI.DevicesCommunication.signals import send_event_signal
 
 app = Flask(__name__)
 

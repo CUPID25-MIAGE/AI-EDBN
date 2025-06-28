@@ -1,6 +1,6 @@
 from signals import send_speech_signal, send_event_signal, send_explanation_requested_signal
 from event import Event
-from HA_communication.Bayesian_AI.Audio.speech import speak_text
+from Bayesian_AI.Audio.speech import speak_text
 
 # Matériel -> IA
 
