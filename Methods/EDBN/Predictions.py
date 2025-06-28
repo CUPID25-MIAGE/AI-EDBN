@@ -8,7 +8,6 @@ import re
 import numpy as np
 
 LAMBDA = 1
-
 VALUE_MAPS = {
     "sunUp": {
         0: "il fait nuit",
@@ -37,6 +36,7 @@ def describe_value(attr_name, val, log):
     if val_str in VALUE_MAPS[attr_name]:
         return VALUE_MAPS[attr_name].get(val_str, f"[{val_str}]")
     return val_str
+
 
 def test(model, log):
     return predict_next_event(model, log)
@@ -195,12 +195,7 @@ def prob_unseen_combination(variable, val_tuple, parents):
     if len(predictions) > 0:
         return predictions, True
     else:
-        #fallback -> most frequent event
-        if variable.value_counts:
-            most_common = max(variable.value_counts.items(), key=lambda x: len(x[1]))[0]
-            return {most_common: 1.0}, True
-        else:
-            return {}, True 
+        return {0: 0}, True
 
 
 def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attribute_i, value_combinations):
@@ -237,11 +232,7 @@ def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attrib
     if len(predictions) > 0:
         return predictions, True
     else:
-        #fallback -> most frequent event
-        if variable.value_counts:
-            most_common = max(variable.value_counts.items(), key=lambda x: len(x[1]))[0]
-            return {most_common: 1.0}, True
-        return {}, True
+        return {0: 0}, True
 
 
 def predict_next_event(edbn_model, log):
@@ -520,7 +511,7 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     :param model: trained EDBN model
     :return: (max_val (predicted event), activity_probabilities, explanation, unknown_value)
     """
-    print("current row input: ", current_row)
+    print("parents: ",all_parents)
     #print("\n--- STARTING predict_case_first_suffix ---")
     activity_attr = log.activity  #only predict the main activity, not context (sunUp)
     #print("Current row (k-context):")
@@ -537,14 +528,16 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     explanation = ""
     parent_info = []
     value = []
-    print("all parents: ", all_parents)
+    
+    current_row[2] = current_row[1]
+    current_row[1] = current_row[0]
+    current_row[0] = [None] * len(all_parents)
     #building parent tuple
     for parent in all_parents[activity_attr]:
         val = current_row[parent["k"]][attributes.index(parent["name"])]
         value.append(val)
         val_str = describe_value(parent["name"], val, log)
         parent_info.append(f"{val_str}")
-        print("parent: ", val_str)
     tuple_val = tuple(value)
     #print(f"Parent tuple is: {tuple_val}")
     probs, unknown = get_probabilities(

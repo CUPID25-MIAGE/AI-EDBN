@@ -15,7 +15,7 @@ class Data:
     def __str__(self):
         return "Data: %s" % self.name
 
-    def prepare(self, setting):
+    def prepare(self, setting, mapping):
         print("PREPARE")
         if setting.prefixsize:
             self.logfile.k = setting.prefixsize
@@ -28,7 +28,7 @@ class Data:
         if setting.add_end:
             self.logfile.add_end_events()
         print("CONVERT")
-        self.logfile.convert2int()
+        self.logfile.convert2int(mapping)
         print("K-CONTEXT")
         self.logfile.create_k_context()
         self.logfile.contextdata = self.logfile.contextdata.sort_values(by=[self.logfile.time]).reset_index()

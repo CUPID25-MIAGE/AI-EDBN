@@ -12,17 +12,17 @@ import Predictions.setting
 import Data
 from Utils.LogFile import LogFile
 from helper import *
-
+from datetime import datetime
 
 #CONFIGURATION
 DATASET_NAME = "ivana_csv_v2"
 SETTINGS = Predictions.setting.DBN
 
 
-def prepare_data(filename=DATASET_NAME):
+def prepare_data(log=DATASET_NAME, event_mapping=None):
     print("PREPARE DATA")
-    data_object = Data.get_data(filename)
-    data_object.prepare(SETTINGS)
+    data_object = Data.get_data(log)
+    data_object.prepare(SETTINGS, event_mapping)
     return data_object.logfile
 
 
@@ -32,23 +32,17 @@ def train_model(log):
 
 
 
-def get_current_row(log, model, activity_attr):
+def get_current_row(log, model):
     latest_case_id = log.contextdata.iloc[-1:]["case"].iloc[0]
     trace = log.get_cases().get_group(latest_case_id)
-    all_parents, attributes = get_prediction_attributes(model, activity_attr)
-    print("all_parents: ", all_parents)
+    all_parents, attributes = get_prediction_attributes(model, log.activity)
     current_row = {
         i: [getattr(trace.iloc[-(i + 1)], attr) if len(trace) > i else 0 for attr in attributes]
         for i in range(log.k + 1)
     }
     return current_row, attributes, all_parents, trace
 
-
-def predict_suffix(log, model): # ------> function to use for prediction
-    model.duplicate_events = {}
-    current_row, attributes, all_parents, trace = get_current_row(log, model, log.activity)
-    print("current row is: ")
-    print(current_row)
+def predict_suffix(log, model, all_parents, attributes, current_row): # ------> function to use for prediction
     predicted_event_int, predicted_event_str, prob_event, explanation = predict_event(
         log,
         all_parents=all_parents,
@@ -58,14 +52,12 @@ def predict_suffix(log, model): # ------> function to use for prediction
     )
 
     if filter_check(predicted_event_str):
-        from datetime import datetime
-        current_datetime = datetime.now()
-        formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
-        add_new_row_csv([formatted_datetime,predicted_event_str, 0])
+        #current_datetime = datetime.now()
+        #formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        #add_new_row_csv([formatted_datetime,predicted_event_str, 0])
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
-        #print("Explanation: ",explanation)
     else:
         print(f"Predicted {predicted_event_str}, no action to be done.")
 
@@ -73,22 +65,29 @@ def predict_suffix(log, model): # ------> function to use for prediction
     
 
 coach = False #TO DO: for testing : should be set dynamically (reconnaissance vocale)
-explain = True #TO DO: shpould be set dynamically from voice
+explain = True
 
 def main():
     print("===== START PROCESS =====")
     #executed once
     log = prepare_data()
     model = train_model(log)
-
+    model.duplicate_events = {}
+    print(log.values)
+    event_mapping = log.values[log.activity]
     #TO DO: while true:
     #TO DO: if event received:
-    all_parents, attributes, current_row, explanation = predict_suffix(log, model)
-    #TEST explanation
+    realtime= prepare_data("realtime", log.values)
+    current_row, attributes, all_parents, trace = get_current_row(realtime, model)
+    all_parents, attributes, current_row, explanation = predict_suffix(
+        log,
+        model,
+        all_parents=all_parents,
+        attributes=attributes,
+        current_row=current_row
+    )
     if explain:
-            #TO DO: say the explanation
-            print("Explanation: ",explanation)
-    #TEST event
+        print("Explanation: ",explanation)
     if coach:
         coachedEvent = "lampOn"
         print(f"\nCOACHING... \n- Coached event = {coachedEvent}")
@@ -115,12 +114,18 @@ def mainV2():
     #TO DO: if event received:
     while(True):
         csvName = input("enter csv name to predict (or 'exit' to quit): ")
-        #csvName = 'log_' + log_date + '.csv'
-        csvLog = prepare_data(csvName)
-        all_parents, attributes, current_row, explanation = predict_suffix(csvLog, model)
+        csvLog = prepare_data(csvName, log.values)
+        current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+        all_parents, attributes, current_row, explanation = predict_suffix(
+            log,
+            model,
+            all_parents=all_parents,
+            attributes=attributes,
+            current_row=current_row
+        )
         if explain:
-            #TO DO: say the explanation
             print("Explanation: ",explanation)
+            #speak(explanation)
         if coach:
             coach_event(
                 model=model,
@@ -131,4 +136,4 @@ def mainV2():
             )
 
 if __name__ == '__main__':
-    main()
+    mainV2()
