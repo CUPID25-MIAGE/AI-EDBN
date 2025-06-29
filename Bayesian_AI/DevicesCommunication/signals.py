@@ -6,6 +6,7 @@ from blinker import Signal
 EVENT_SIGNAL = Signal("event")
 SPEECH_SIGNAL = Signal("speech")
 EXPLANATION_SIGNAL = Signal("explanation")
+MUSIC_SIGNAL = Signal("music")
 
 def send_event_signal(event):
     print("[Signal] EVENT_SIGNAL envoye")
@@ -18,3 +19,7 @@ def send_speech_signal(speech):
 def send_explanation_requested_signal():
     print("[Signal] EXPLANATION_SIGNAL envoye")
     EXPLANATION_SIGNAL.send()
+
+def send_music_signal(state):
+    print(f"[Signal] MUSIC_SIGNAL envoyÃ© avec Ã©tat = {state}")
+    MUSIC_SIGNAL.send(state)
