@@ -12,6 +12,9 @@ def sun_down():
     global_variable_sun = 0
     print("Sun is down")
     return global_variable_sun
+def get_sun_state():
+    global global_variable_sun
+    return global_variable_sun
 
 def filter_check(data_to_filter): #return false if the result should be filtered out
     filter_event_to_block = ["doorOpened","doorClosed", "sunUp", "sunDown", "nicolasDetected", "nicolasNotDetected", "presenceOn", "presenceOff", "0"] #0 -> no prediction
@@ -54,3 +57,46 @@ def add_new_row_csv(row_data):
 
 def do_action(action):
     return
+
+
+
+def save_coach_model(parents, event):
+    import csv
+    import os
+    filepath = 'Data/coach/coaching_maping.csv'
+    insert_parents = ' '.join(map(str,parents))
+    if not os.path.exists(filepath):
+        with open(filepath, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['parent','event'])
+            writer.writerow([insert_parents, event])
+    else :
+        with open(filepath, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([insert_parents, event])
+
+
+# save_coach_model((1, 2, 3), 1)
+
+def update_coach_model(model, outcome):
+    import csv
+    import os
+    filepath = 'Data/coach/coaching_maping.csv'
+    if os.path.exists(filepath):
+        with open(filepath, mode='r') as file:
+            reader = csv.reader(file)
+            is_header = 0
+            from Methods.EDBN.Predictions import coach_event_from_log
+            for row in reader:
+                if is_header == 0:
+                    is_header += 1
+                    continue
+                parent_tuple = tuple(map(int, row[0].split(' ')))
+                coach_event_from_log(model, parent_tuple, outcome)
+        return model
+    else:
+        print(f"Le fichier {filepath} n'existe pas.")
+        return None
+
+
+update_coach_model("sqd")

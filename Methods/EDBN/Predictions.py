@@ -616,6 +616,38 @@ def coach_event(model, all_parents, attributes, current_row, outcome, target_att
 
     print(f"Coached CPT: new possible outcome events dictionary {cpt.cpt[parent_val]} => (prob({outcome})=1.0)\n")
 
+def coach_event_from_log(model, parents_tuple, outcome, target_attribute="event"):
+    """
+    Force the model to assign probability 1.0 to `outcome` for the parent combination derived
+    from the current_row and all_parents for the given target_attribute.
+
+    Parameters:
+    - model: the EDBN model
+    - all_parents: dict of parent info
+    - outcome: the value to force as the only possible result (int code of event)
+    - target_attribute: attribute whose CPT you want to modify
+    """
+    print("\nCOACHING...")
+    variable = model.get_variable(target_attribute)
+    cpt = variable.conditional_table
+
+    #creating the parent_val tuple
+    parent_val = parents_tuple
+
+    #print("variable:", variable)
+    #print("cpt parent count keys:", list(cpt.parent_count.keys()))
+    #print("parent_val to coach:", parent_val)
+
+    if parent_val not in cpt.parent_count:
+        print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
+        cpt.cpt[parent_val] = {outcome: 1}
+        cpt.parent_count[parent_val] = 1
+    else:
+        #overwrite with same total count
+        count = cpt.parent_count[parent_val]
+        cpt.cpt[parent_val] = {outcome: count}
+
+    print(f"Coached CPT: new possible outcome events dictionary {cpt.cpt[parent_val]} => (prob({outcome})=1.0)\n")
 
 def get_prediction_attributes(model, activity_attribute):
     """
