@@ -45,6 +45,14 @@ def request_shutter_open():
 def request_shutter_close():
     close_shutter()
 
+    # TODO : implementer la fonction
+def request_music_on():
+    return
+
+    # TODO : implementer la fonction
+def request_music_off():
+    return
+
 # Rougir (Non implémenté)
 def request_blush():
     return
