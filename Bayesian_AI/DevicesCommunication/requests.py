@@ -1,4 +1,4 @@
-from audio_video_communication import send_request_speak
+from Bayesian_AI.Audio.speech_interface import send_request_speak
 from rest_communication import send_request_lamp_on, send_request_lamp_off
 from robot_animation_communication import *
 from shutter_communication import open_shutter, close_shutter

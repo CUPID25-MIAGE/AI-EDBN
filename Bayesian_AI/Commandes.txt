@@ -1,3 +1,0 @@
-cd /home/pi/Bayesian-AI
-source Video/hailo_rpi5_examples/setup_env.sh
-python mainTest2.py

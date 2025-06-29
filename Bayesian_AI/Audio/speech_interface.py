@@ -1,5 +1,5 @@
-from DevicesCommunication.signals import send_speech_signal, send_explanation_requested_signal
-from Audio.speech import speak_text
+from Bayesian_AI.DevicesCommunication.signals import send_speech_signal, send_explanation_requested_signal
+from Bayesian_AI.Audio.speech import speak_text
 
 # Fonction appelee depuis le listener apres reconnaissance vocale
 def audio_speech_handler(speech):

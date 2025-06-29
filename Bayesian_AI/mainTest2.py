@@ -1,14 +1,12 @@
 import sys
-sys.path.append('/home/pi/Bayesian_AI/Video/hailo_rpi5_examples/venv_hailo_rpi5_examples/lib/python3.11/site-packages')
+import os
 import threading
 from DevicesCommunication.rest_communication import app
 from Audio.listener2 import start_listener
 from Video.hailo_rpi5_examples.basic_pipelines.detection3 import start_detection
-import os
+from Bayesian_AI.DevicesCommunication.rest_communication import launch_server
 
-# Importer les handlers pour connecter les signaux
-#import Audio.signal_handlers
-import Video.signal_handlers
+sys.path.append('/home/pi/Bayesian_AI/Video/hailo_rpi5_examples/venv_hailo_rpi5_examples/lib/python3.11/site-packages')
 
 if __name__ == '__main__':
     # Chemins des fichiers YOLO
@@ -27,5 +25,9 @@ if __name__ == '__main__':
     listener_thread = threading.Thread(target=start_listener, daemon=True)
     listener_thread.start()
 
-    # Lancer l'API Flask
-    app.run(host='0.0.0.0', port=8080)
+    # Lancer le serveur http local
+    http_thread = threading.Thread(target=launch_server)
+    http_thread.start()
+
+    # TODO : Lancer le processus central de l'IA (hors d'un thread)
+
