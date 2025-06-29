@@ -1,4 +1,5 @@
 from Bayesian_AI.Audio.speech_interface import send_request_speak
+from Bayesian_AI.Audio.music import launch_music, stop_music
 from rest_communication import send_request_lamp_on, send_request_lamp_off
 from robot_animation_communication import *
 from shutter_communication import open_shutter, close_shutter
@@ -45,13 +46,11 @@ def request_shutter_open():
 def request_shutter_close():
     close_shutter()
 
-    # TODO : implementer la fonction
 def request_music_on():
-    return
+    launch_music()
 
-    # TODO : implementer la fonction
 def request_music_off():
-    return
+    stop_music()
 
 # Rougir (Non implémenté)
 def request_blush():
