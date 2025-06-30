@@ -1,7 +1,0 @@
-case,completeTime,event,sunUp
-7,2023-01-08 09:04:00,doorClosed,0
-7,2023-01-08 09:04:00,doorClosed,1
-7,2023-01-08 09:04:00,doorClosed,1
-7,2023-01-08 15:01:00,doorOpened,1
-7,2023-01-08 15:01:18,nicolasDetected,1
-7,2023-01-08 15:01:48,presenceOn,1

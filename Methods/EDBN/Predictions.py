@@ -516,7 +516,6 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     :return: (max_val (predicted event), activity_probabilities, explanation, unknown_value)
     """
 
-    print("parents: ",all_parents)
     #print("\n--- STARTING predict_case_first_suffix ---")
     activity_attr = log.activity  #only predict the main activity, not context (sunUp)
     #print("Current row (k-context):")
@@ -536,21 +535,13 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
         i=i-1
     current_row[0] = [None] * len(all_parents)
     #building parent tuple
-    print("current row (apres decalage): ", current_row)
     for parent in all_parents[activity_attr]:
-        print("current row: ", current_row)
-        print("parent is: ", parent)
         val = current_row[parent["k"]][attributes.index(parent["name"])]
-        print("parent k: ", parent["k"])
-        print("attributes.index(parent[name])", attributes.index(parent["name"]))
-        print("int val: ", val)
         value.append(val)
         val_str = describe_value(parent["name"], val, log)
-        print("val_str: ", val_str)
         if val is not None and (val!=0 or parent["name"]!=log.activity):
             parent_info.append(f"{val_str}")
     tuple_val = tuple(value)
-    print("parent tuple is:", tuple_val)
     
     #print(f"Parent tuple is: {tuple_val}")
     probs, unknown = get_probabilities(
@@ -581,17 +572,17 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     #    print(f"  t-{k}: {current_row[k]}")
     #print("!!!!!!!!!!!!! Final predicted event:")
     #print(predicted_event)
-    return max_val, predicted_str, probs, explanation, unknown_value
+    return max_val, predicted_str, probs, explanation, unknown_value, tuple_val
 
 
 def predict_event(log, all_parents, attributes, current_row, model):
     print("\nPREDICTING...")
-    predicted_event_int, predicted_event_str, probs, explanation, _ = predict_case_first_suffix(log,all_parents, attributes, current_row, model)
+    predicted_event_int, predicted_event_str, probs, explanation, _, tuple_val= predict_case_first_suffix(log,all_parents, attributes, current_row, model)
     if not predicted_event_int:
-        return 0, "0", 0.0, ""
+        return 0, "0", 0.0, "", ()
     prob_predicted_event = probs[predicted_event_int]
     print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\nPossible events: ", [(log.convert_int2string(log.activity, k), v) for k, v in probs.items()])
-    return predicted_event_int, predicted_event_str, prob_predicted_event, explanation
+    return predicted_event_int, predicted_event_str, prob_predicted_event, explanation, tuple_val
 
 
 def coach_event(model, all_parents, attributes, current_row, outcome, target_attribute="event"):

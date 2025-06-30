@@ -10,6 +10,8 @@ import Data
 from Utils.LogFile import LogFile
 from helper import *
 from datetime import datetime
+from Bayesian_AI.DevicesCommunication.requests import *
+
 
 #CONFIGURATION
 DATASET_NAME = "train_v5"
@@ -42,7 +44,7 @@ def get_current_row(log, model):
 
 
 def predict_suffix(log, model, all_parents, attributes, current_row): # ------> function to use for prediction
-    predicted_event_int, predicted_event_str, prob_event, explanation = predict_event(
+    predicted_event_int, predicted_event_str, prob_event, explanation, parent_tuple = predict_event(
         log,
         all_parents=all_parents,
         attributes=attributes,
@@ -57,15 +59,27 @@ def predict_suffix(log, model, all_parents, attributes, current_row): # ------> 
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
+        if predicted_event_str == "lampOn":
+            request_lamp_on()
+        elif predicted_event_str == "lampOff":
+            request_lamp_off()
+        elif predicted_event_str == "blindsOpen":
+            request_shutter_open()
+        elif predicted_event_str == "blindsClosed":
+            request_shutter_close()
+        elif predicted_event_str == "musicOn":
+            request_music_on()
+        elif predicted_event_str == "musicOff":
+            request_music_off()
     else:
         print(f"Predicted {predicted_event_str}, no action to be done.")
 
-    return all_parents, attributes, current_row, explanation
+    return all_parents, attributes, current_row, explanation, parent_tuple
     
 
-coach = False #TO DO: for testing : should be set dynamically (reconnaissance vocale)
+coach = True #TO DO: for testing : should be set dynamically (reconnaissance vocale)
 explain = True
-
+csvName = "realtime"
 
 def main():
     print("===== START PROCESS =====")
@@ -114,39 +128,79 @@ def mainV2():
 
     #TO DO: while true:
     #TO DO: if event received:
+    sauvegard = ""
     while(True):
         csvName = input("enter csv name to predict (or 'exit' to quit): ")
         csvLog = prepare_data(csvName, log.values)
 
-        #to be deleted
+        """         #to be deleted
         print("----------------------mapping realtime: ")
         if "event" in log.values:
             for i, val in enumerate(csvLog.values["event"], 1): 
                 print(f"{val} -> {i}")
         else:
             print("No mapping found for 'event'")
-        
+         """
         
         current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
         print("current row (original): ", current_row)
-        all_parents, attributes, current_row, explanation = predict_suffix(
+        all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
             log,
             model,
             all_parents=all_parents,
             attributes=attributes,
             current_row=current_row
         )
+        # 
         if explain:
             print("Explanation: ",explanation)
-            #speak(explanation)
+            request_speak(explanation)
         if coach:
+            coached_int = log.convert_string2int(log.activity, "lampOn")
             coach_event(
                 model=model,
                 all_parents=all_parents,
                 attributes=attributes,
                 current_row=current_row,
-                outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
+                outcome=coached_int #TO DO: example, on recupere ca de la reconnaissance vocale
             )
+            
+            
+            
+            current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+            print("\n----------------------PREDICTION AFTER COACHING: ")
+            all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
+                log,
+                model,
+                all_parents=all_parents,
+                attributes=attributes,
+                current_row=current_row
+            )
+            save_coach_model(parent_tuple, coached_int)
+            
+            model=update(model, csvLog)
+            """ print("\n--------------------PREDICTION AFTER UPDATING: ")
+            current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+            all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
+                log,
+                model,
+                all_parents=all_parents,
+                attributes=attributes,
+                current_row=current_row
+            )
+
+
+            model=update_coach_model(model)
+            current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+            print("\n--------------------PREDICTION AFTER UPDATE+COACH: ")
+            all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
+                log,
+                model,
+                all_parents=all_parents,
+                attributes=attributes,
+                current_row=current_row
+            )
+ """
 
             #to do: add car j'etais coaché à faire ça.. dasn explanation
 

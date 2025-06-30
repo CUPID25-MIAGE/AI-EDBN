@@ -1,0 +1,5 @@
+case,completeTime,event,sunUp
+2,2023-01-03 17:06:00,sunDown,0
+2,2023-01-03 18:02:00,doorOpened,0
+2,2023-01-03 18:02:15,nicolasDetected,0
+2,2023-01-03 18:02:38,presenceOn,0

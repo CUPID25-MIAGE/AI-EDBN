@@ -78,7 +78,7 @@ def save_coach_model(parents, event):
 
 # save_coach_model((1, 2, 3), 1)
 
-def update_coach_model(model, outcome):
+def update_coach_model(model):
     import csv
     import os
     filepath = 'Data/coach/coaching_maping.csv'
@@ -92,11 +92,10 @@ def update_coach_model(model, outcome):
                     is_header += 1
                     continue
                 parent_tuple = tuple(map(int, row[0].split(' ')))
-                coach_event_from_log(model, parent_tuple, outcome)
+                coach_event_from_log(model, parent_tuple, int(row[1]))
         return model
     else:
         print(f"Le fichier {filepath} n'existe pas.")
         return None
 
 
-update_coach_model("sqd")
