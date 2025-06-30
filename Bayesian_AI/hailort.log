@@ -1,0 +1,125 @@
+[2025-06-13 16:43:15.576] [4881] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-13 16:43:15.578] [4881] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-13 16:43:15.580] [4881] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-19 11:45:24.148] [3035] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-19 11:45:24.150] [3035] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-19 11:45:24.151] [3035] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-19 12:13:23.564] [5725] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-19 12:13:23.567] [5725] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-19 12:13:23.569] [5725] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:24:57.380] [4178] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 05:24:57.381] [4178] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:24:57.382] [4178] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:34:26.104] [4628] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 05:34:26.105] [4628] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:34:26.107] [4628] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:36:00.104] [5238] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 05:36:00.106] [5238] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:36:00.107] [5238] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:37:54.380] [5816] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 05:37:54.382] [5816] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:37:54.383] [5816] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:46:58.395] [6080] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 05:46:58.396] [6080] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:46:58.397] [6080] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:49:24.152] [6668] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 05:49:24.153] [6668] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:49:24.154] [6668] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:58:21.356] [7560] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 05:58:21.357] [7560] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 05:58:21.358] [7560] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:09:44.199] [10490] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:09:44.200] [10490] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:09:44.201] [10490] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:09:46.556] [11035] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:09:46.559] [11035] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:09:46.561] [11035] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:09:46.629] [11032] [HailoRT] [info] [vdevice.cpp:523] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: ROUND_ROBIN, multi_process_service: false
+[2025-06-20 06:09:46.640] [11032] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:09:46.641] [11032] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:09:46.641] [11032] [HailoRT] [info] [vdevice.cpp:651] [create] VDevice Infos: 0001:01:00.0
+[2025-06-20 06:09:46.693] [11032] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s
+[2025-06-20 06:09:46.693] [11032] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s
+[2025-06-20 06:09:47.133] [11032] [HailoRT] [info] [internal_buffer_manager.cpp:204] [print_execution_results] Planned internal buffer memory: CMA memory 0, user memory 3279872. memory to edge layer usage factor is 1
+[2025-06-20 06:09:47.133] [11032] [HailoRT] [info] [internal_buffer_manager.cpp:212] [print_execution_results] Default Internal buffer planner executed successfully
+[2025-06-20 06:09:47.157] [11032] [HailoRT] [info] [device_internal.cpp:57] [configure] Configuring HEF took 38.796238 milliseconds
+[2025-06-20 06:09:47.158] [11032] [HailoRT] [info] [vdevice.cpp:749] [configure] Configuring HEF on VDevice took 39.657124 milliseconds
+[2025-06-20 06:09:47.158] [11032] [HailoRT] [info] [infer_model.cpp:436] [configure] Configuring network group 'yolov5s' with params: batch size: 2, power mode: PERFORMANCE, latency: NONE
+[2025-06-20 06:09:47.166] [11032] [HailoRT] [info] [multi_io_elements.cpp:756] [create] Created (AsyncHwEl)
+[2025-06-20 06:09:47.167] [11032] [HailoRT] [info] [queue_elements.cpp:450] [create] Created (EntryPushQEl0yolov5s/input_layer1 | timeout: 10s)
+[2025-06-20 06:09:47.167] [11032] [HailoRT] [info] [filter_elements.cpp:101] [create] Created (PreInferEl1yolov5s/input_layer1 | Reorder - src_order: RGB4, src_shape: (640, 640, 3), dst_order: NHCW, dst_shape: (640, 640, 3))
+[2025-06-20 06:09:47.167] [11032] [HailoRT] [info] [queue_elements.cpp:450] [create] Created (PushQEl1yolov5s/input_layer1 | timeout: 10s)
+[2025-06-20 06:09:47.167] [11032] [HailoRT] [info] [multi_io_elements.cpp:135] [create] Created (NmsPPMuxEl0YOLOv5-Post-Process | Op YOLOV5, Name: YOLOv5-Post-Process, Score threshold: 0.300, IoU threshold: 0.45, Classes: 4, Cross classes: false, NMS results order: BY_CLASS, Max bboxes per class: 80, Image height: 640, Image width: 640)
+[2025-06-20 06:09:47.167] [11032] [HailoRT] [info] [queue_elements.cpp:942] [create] Created (MultiPushQEl0YOLOv5-Post-Process | timeout: 10s)
+[2025-06-20 06:09:47.167] [11032] [HailoRT] [info] [edge_elements.cpp:187] [create] Created (LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process)
+[2025-06-20 06:09:47.167] [11032] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] EntryPushQEl0yolov5s/input_layer1 | inputs: user | outputs: PreInferEl1yolov5s/input_layer1(running in thread_id: 11092)
+[2025-06-20 06:09:47.168] [11032] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] PreInferEl1yolov5s/input_layer1 | inputs: EntryPushQEl0yolov5s/input_layer1[0] | outputs: PushQEl1yolov5s/input_layer1
+[2025-06-20 06:09:47.168] [11032] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] PushQEl1yolov5s/input_layer1 | inputs: PreInferEl1yolov5s/input_layer1[0] | outputs: AsyncHwEl(running in thread_id: 11093)
+[2025-06-20 06:09:47.168] [11032] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] AsyncHwEl | inputs: PushQEl1yolov5s/input_layer1[0] | outputs: MultiPushQEl0YOLOv5-Post-Process MultiPushQEl0YOLOv5-Post-Process MultiPushQEl0YOLOv5-Post-Process
+[2025-06-20 06:09:47.169] [11032] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] MultiPushQEl0YOLOv5-Post-Process | inputs: AsyncHwEl[0] AsyncHwEl[1] AsyncHwEl[2] | outputs: NmsPPMuxEl0YOLOv5-Post-Process(running in thread_id: 11094)
+[2025-06-20 06:09:47.169] [11032] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] NmsPPMuxEl0YOLOv5-Post-Process | inputs: MultiPushQEl0YOLOv5-Post-Process[0] | outputs: LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process
+[2025-06-20 06:09:47.169] [11032] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process | inputs: NmsPPMuxEl0YOLOv5-Post-Process[0] | outputs: user
+[2025-06-20 06:16:07.366] [11327] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:16:07.368] [11327] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:16:07.369] [11327] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:16:15.612] [11874] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:16:15.614] [11874] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:16:15.617] [11874] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:16:15.698] [11871] [HailoRT] [info] [vdevice.cpp:523] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: ROUND_ROBIN, multi_process_service: false
+[2025-06-20 06:16:15.710] [11871] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:16:15.712] [11871] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:16:15.712] [11871] [HailoRT] [info] [vdevice.cpp:651] [create] VDevice Infos: 0001:01:00.0
+[2025-06-20 06:16:15.763] [11871] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s
+[2025-06-20 06:16:15.763] [11871] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s
+[2025-06-20 06:16:15.899] [11871] [HailoRT] [info] [internal_buffer_manager.cpp:204] [print_execution_results] Planned internal buffer memory: CMA memory 0, user memory 3279872. memory to edge layer usage factor is 1
+[2025-06-20 06:16:15.899] [11871] [HailoRT] [info] [internal_buffer_manager.cpp:212] [print_execution_results] Default Internal buffer planner executed successfully
+[2025-06-20 06:16:15.923] [11871] [HailoRT] [info] [device_internal.cpp:57] [configure] Configuring HEF took 30.78085 milliseconds
+[2025-06-20 06:16:15.923] [11871] [HailoRT] [info] [vdevice.cpp:749] [configure] Configuring HEF on VDevice took 31.095848 milliseconds
+[2025-06-20 06:16:15.923] [11871] [HailoRT] [info] [infer_model.cpp:436] [configure] Configuring network group 'yolov5s' with params: batch size: 2, power mode: PERFORMANCE, latency: NONE
+[2025-06-20 06:16:15.923] [11871] [HailoRT] [info] [multi_io_elements.cpp:756] [create] Created (AsyncHwEl)
+[2025-06-20 06:16:15.923] [11871] [HailoRT] [info] [queue_elements.cpp:450] [create] Created (EntryPushQEl0yolov5s/input_layer1 | timeout: 10s)
+[2025-06-20 06:16:15.923] [11871] [HailoRT] [info] [filter_elements.cpp:101] [create] Created (PreInferEl1yolov5s/input_layer1 | Reorder - src_order: RGB4, src_shape: (640, 640, 3), dst_order: NHCW, dst_shape: (640, 640, 3))
+[2025-06-20 06:16:15.924] [11871] [HailoRT] [info] [queue_elements.cpp:450] [create] Created (PushQEl1yolov5s/input_layer1 | timeout: 10s)
+[2025-06-20 06:16:15.924] [11871] [HailoRT] [info] [multi_io_elements.cpp:135] [create] Created (NmsPPMuxEl0YOLOv5-Post-Process | Op YOLOV5, Name: YOLOv5-Post-Process, Score threshold: 0.300, IoU threshold: 0.45, Classes: 4, Cross classes: false, NMS results order: BY_CLASS, Max bboxes per class: 80, Image height: 640, Image width: 640)
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [queue_elements.cpp:942] [create] Created (MultiPushQEl0YOLOv5-Post-Process | timeout: 10s)
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [edge_elements.cpp:187] [create] Created (LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process)
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] EntryPushQEl0yolov5s/input_layer1 | inputs: user | outputs: PreInferEl1yolov5s/input_layer1(running in thread_id: 11917)
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] PreInferEl1yolov5s/input_layer1 | inputs: EntryPushQEl0yolov5s/input_layer1[0] | outputs: PushQEl1yolov5s/input_layer1
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] PushQEl1yolov5s/input_layer1 | inputs: PreInferEl1yolov5s/input_layer1[0] | outputs: AsyncHwEl(running in thread_id: 11918)
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] AsyncHwEl | inputs: PushQEl1yolov5s/input_layer1[0] | outputs: MultiPushQEl0YOLOv5-Post-Process MultiPushQEl0YOLOv5-Post-Process MultiPushQEl0YOLOv5-Post-Process
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] MultiPushQEl0YOLOv5-Post-Process | inputs: AsyncHwEl[0] AsyncHwEl[1] AsyncHwEl[2] | outputs: NmsPPMuxEl0YOLOv5-Post-Process(running in thread_id: 11919)
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] NmsPPMuxEl0YOLOv5-Post-Process | inputs: MultiPushQEl0YOLOv5-Post-Process[0] | outputs: LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process
+[2025-06-20 06:16:15.925] [11871] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process | inputs: NmsPPMuxEl0YOLOv5-Post-Process[0] | outputs: user
+[2025-06-20 06:16:16.177] [11908] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s
+[2025-06-20 06:18:37.880] [12031] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:18:37.881] [12031] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:18:37.885] [12031] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:18:44.456] [12576] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:18:44.458] [12576] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:18:44.459] [12576] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:18:44.523] [12573] [HailoRT] [info] [vdevice.cpp:523] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: ROUND_ROBIN, multi_process_service: false
+[2025-06-20 06:18:44.535] [12573] [HailoRT] [info] [device.cpp:49] [Device] OS Version: Linux 6.12.25+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64
+[2025-06-20 06:18:44.536] [12573] [HailoRT] [info] [control.cpp:108] [control__parse_identify_results] firmware_version is: 4.20.0
+[2025-06-20 06:18:44.537] [12573] [HailoRT] [info] [vdevice.cpp:651] [create] VDevice Infos: 0001:01:00.0
+[2025-06-20 06:18:44.589] [12573] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s
+[2025-06-20 06:18:44.589] [12573] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s
+[2025-06-20 06:18:44.725] [12573] [HailoRT] [info] [internal_buffer_manager.cpp:204] [print_execution_results] Planned internal buffer memory: CMA memory 0, user memory 3279872. memory to edge layer usage factor is 1
+[2025-06-20 06:18:44.725] [12573] [HailoRT] [info] [internal_buffer_manager.cpp:212] [print_execution_results] Default Internal buffer planner executed successfully
+[2025-06-20 06:18:44.749] [12573] [HailoRT] [info] [device_internal.cpp:57] [configure] Configuring HEF took 29.999395 milliseconds
+[2025-06-20 06:18:44.749] [12573] [HailoRT] [info] [vdevice.cpp:749] [configure] Configuring HEF on VDevice took 30.331912 milliseconds
+[2025-06-20 06:18:44.749] [12573] [HailoRT] [info] [infer_model.cpp:436] [configure] Configuring network group 'yolov5s' with params: batch size: 2, power mode: PERFORMANCE, latency: NONE
+[2025-06-20 06:18:44.749] [12573] [HailoRT] [info] [multi_io_elements.cpp:756] [create] Created (AsyncHwEl)
+[2025-06-20 06:18:44.749] [12573] [HailoRT] [info] [queue_elements.cpp:450] [create] Created (EntryPushQEl0yolov5s/input_layer1 | timeout: 10s)
+[2025-06-20 06:18:44.749] [12573] [HailoRT] [info] [filter_elements.cpp:101] [create] Created (PreInferEl1yolov5s/input_layer1 | Reorder - src_order: RGB4, src_shape: (640, 640, 3), dst_order: NHCW, dst_shape: (640, 640, 3))
+[2025-06-20 06:18:44.750] [12573] [HailoRT] [info] [queue_elements.cpp:450] [create] Created (PushQEl1yolov5s/input_layer1 | timeout: 10s)
+[2025-06-20 06:18:44.750] [12573] [HailoRT] [info] [multi_io_elements.cpp:135] [create] Created (NmsPPMuxEl0YOLOv5-Post-Process | Op YOLOV5, Name: YOLOv5-Post-Process, Score threshold: 0.300, IoU threshold: 0.45, Classes: 4, Cross classes: false, NMS results order: BY_CLASS, Max bboxes per class: 80, Image height: 640, Image width: 640)
+[2025-06-20 06:18:44.751] [12573] [HailoRT] [info] [queue_elements.cpp:942] [create] Created (MultiPushQEl0YOLOv5-Post-Process | timeout: 10s)
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [edge_elements.cpp:187] [create] Created (LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process)
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] EntryPushQEl0yolov5s/input_layer1 | inputs: user | outputs: PreInferEl1yolov5s/input_layer1(running in thread_id: 12619)
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] PreInferEl1yolov5s/input_layer1 | inputs: EntryPushQEl0yolov5s/input_layer1[0] | outputs: PushQEl1yolov5s/input_layer1
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] PushQEl1yolov5s/input_layer1 | inputs: PreInferEl1yolov5s/input_layer1[0] | outputs: AsyncHwEl(running in thread_id: 12620)
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] AsyncHwEl | inputs: PushQEl1yolov5s/input_layer1[0] | outputs: MultiPushQEl0YOLOv5-Post-Process MultiPushQEl0YOLOv5-Post-Process MultiPushQEl0YOLOv5-Post-Process
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] MultiPushQEl0YOLOv5-Post-Process | inputs: AsyncHwEl[0] AsyncHwEl[1] AsyncHwEl[2] | outputs: NmsPPMuxEl0YOLOv5-Post-Process(running in thread_id: 12621)
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] NmsPPMuxEl0YOLOv5-Post-Process | inputs: MultiPushQEl0YOLOv5-Post-Process[0] | outputs: LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process
+[2025-06-20 06:18:44.752] [12573] [HailoRT] [info] [pipeline.cpp:891] [print_deep_description] LastAsyncEl0NmsPPMuxEl0YOLOv5-Post-Process | inputs: NmsPPMuxEl0YOLOv5-Post-Process[0] | outputs: user
+[2025-06-20 06:18:44.985] [12610] [HailoRT] [info] [hef.cpp:1929] [get_network_group_and_network_name] No name was given. Addressing all networks of default network_group: yolov5s

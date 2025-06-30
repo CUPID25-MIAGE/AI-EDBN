@@ -1,0 +1,12 @@
+{
+    "detection_threshold": 0.25,
+    "max_boxes":200,
+    "labels": [
+	    "unlabeled",
+      "person1",
+      "person2",
+      "person3",
+       "nico"
+    ]
+
+}
