@@ -1,4 +1,4 @@
-from Bayesian_AI.DevicesCommunication.signals import send_speech_signal, send_explanation_requested_signal, send_music_signal
+from Bayesian_AI.DevicesCommunication.signals import send_speech_signal, send_explanation_requested_signal
 from Bayesian_AI.Audio.speech import speak_text
 
 # Fonction appelee depuis le listener apres reconnaissance vocale
@@ -6,16 +6,9 @@ def audio_speech_handler(speech):
     speech = speech.lower()
     if speech == "cupide explique":
         send_explanation_requested_signal()
-
-     elif speech.startswith("cupide allume la musique"):
-        send_music_signal("on")
-        
-    elif speech.startswith("cupide arrête la musique"):
-        send_music_signal("off")
     
     elif speech.startswith("cupide "):
-        # Commence bien par "cupide " mais pas "cupide explique" ou
-        #"cupide allume la musique"  ou "cupide arrête la musique"
+        # Commence bien par "cupide " mais pas "cupide explique"
         send_speech_signal(speech)
     else:
         # Ne rien faire sinon
