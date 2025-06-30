@@ -53,9 +53,10 @@ def predict_suffix(log, model, all_parents, attributes, current_row): # ------> 
     )
 
     if filter_check(predicted_event_str):
-        #current_datetime = datetime.now()
-        #formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
-        #add_new_row_csv([formatted_datetime,predicted_event_str, 0])
+        current_datetime = datetime.now()
+        formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        add_new_row_csv([formatted_datetime,predicted_event_str, 0])
+        
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
@@ -79,7 +80,7 @@ def predict_suffix(log, model, all_parents, attributes, current_row): # ------> 
 
 coach = True #TO DO: for testing : should be set dynamically (reconnaissance vocale)
 explain = True
-csvName = "realtime"
+logsList = ["realtime_day_of_week", "realtime_weekend"]
 
 def main():
     print("===== START PROCESS =====")
@@ -118,13 +119,6 @@ def mainV2():
     log = prepare_data()
     model = train_model(log)
 
-    #to be deleted
-    print("----------------------mapping train: ")
-    if "event" in log.values:
-        for i, val in enumerate(log.values["event"], 1): 
-            print(f"{val} -> {i}")
-    else:
-        print("No mapping found for 'event'")
 
     #TO DO: while true:
     #TO DO: if event received:
@@ -143,7 +137,6 @@ def mainV2():
          """
         
         current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
-        print("current row (original): ", current_row)
         all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
             log,
             model,
@@ -164,21 +157,9 @@ def mainV2():
                 current_row=current_row,
                 outcome=coached_int #TO DO: example, on recupere ca de la reconnaissance vocale
             )
+            #save_coach_model(parent_tuple, coached_int)
             
-            
-            
-            current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
-            print("\n----------------------PREDICTION AFTER COACHING: ")
-            all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
-                log,
-                model,
-                all_parents=all_parents,
-                attributes=attributes,
-                current_row=current_row
-            )
-            save_coach_model(parent_tuple, coached_int)
-            
-            model=update(model, csvLog)
+            #model=update(model, csvLog)
             """ print("\n--------------------PREDICTION AFTER UPDATING: ")
             current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
             all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
@@ -204,6 +185,67 @@ def mainV2():
 
             #to do: add car j'etais coaché à faire ça.. dasn explanation
 
+
+def mainV3():
+    log = prepare_data()
+    model = train_model(log)
+    lastLine = ""
+
+    while True:
+        line, log_name = get_last_line_csv()
+        if (lastLine == "") or line!=lastLine:
+            csvLog = prepare_data(log_name, log.values)
+            current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+
+            all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
+                log,
+                model,
+                all_parents=all_parents,
+                attributes=attributes,
+                current_row=current_row
+            )
+            if explain:
+                print("Explanation: ",explanation)
+                request_speak(explanation)
+            if coach:
+                coached_int = log.convert_string2int(log.activity, "lampOn")
+                coach_event(
+                    model=model,
+                    all_parents=all_parents,
+                    attributes=attributes,
+                    current_row=current_row,
+                    outcome=coached_int #TO DO: example, on recupere ca de la reconnaissance vocale
+                )
+        lastLine = line
+
+def mainV4():
+    print("===== START PROCESS =====")
+    log = prepare_data()
+    model = train_model(log)
+
+    for realtime in logsList:
+        csvLog = prepare_data(realtime, log.values)
+        current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+        all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
+            log,
+            model,
+            all_parents=all_parents,
+            attributes=attributes,
+            current_row=current_row
+        )
+        # 
+        if explain:
+            print("Explanation: ",explanation)
+            request_speak(explanation)
+        if coach:
+            coached_int = log.convert_string2int(log.activity, "lampOn")
+            coach_event(
+                model=model,
+                all_parents=all_parents,
+                attributes=attributes,
+                current_row=current_row,
+                outcome=coached_int #TO DO: example, on recupere ca de la reconnaissance vocale
+            )
 
 if __name__ == '__main__':
     mainV2()

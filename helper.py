@@ -110,9 +110,10 @@ def get_last_line_csv():
             last_line = None
             for row in reader:
                 last_line = row
-            return last_line
+            return last_line, log_name
     else:
         print(f"Le fichier {filepath} n'existe pas.")
-        return None
-print(get_last_line_csv())
+        return None, log_name
+
+
 # update_coach_model("sqd","fyuhjgk")
