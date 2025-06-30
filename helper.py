@@ -98,4 +98,21 @@ def update_coach_model(model):
         print(f"Le fichier {filepath} n'existe pas.")
         return None
 
-
+def get_last_line_csv():
+    import os
+    import csv
+    log_date = get_time_stamp_case_id()
+    log_name = 'log_'+log_date+'.csv'
+    filepath = 'Data/logs/'+log_name
+    if os.path.exists(filepath):
+        with open(filepath, mode='r') as file:
+            reader = csv.reader(file)
+            last_line = None
+            for row in reader:
+                last_line = row
+            return last_line
+    else:
+        print(f"Le fichier {filepath} n'existe pas.")
+        return None
+print(get_last_line_csv())
+# update_coach_model("sqd","fyuhjgk")

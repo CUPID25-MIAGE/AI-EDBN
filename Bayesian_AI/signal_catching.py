@@ -21,7 +21,6 @@ def HA_event_method(event):
     print(event.name)
     print(event.timestamp)
 
-# En attente de méthode pour tester ca
 def speech_signal(speech):
     speech = speech.lower()
     base_sentence = "cupide"
@@ -31,15 +30,19 @@ def speech_signal(speech):
     if speech == base_sentence+ " ouvre les volets":
         request_shutter_open()
         add_new_row_csv([timestamp,"shutter_open"])
+        request_speak("J'ai ouvert les volets")
     elif speech == base_sentence+ " ferme les volets":
         request_shutter_close()
         add_new_row_csv([timestamp, "shutter_close"])
+        request_speak("J'ai fermé les volets")
     elif speech == base_sentence+ " allume la musique":
         request_music_on()
         add_new_row_csv([timestamp, "music_on"])
+        request_speak("J'ai allumé la musique")
     elif speech == base_sentence+ " éteint la musique":
         request_music_off()
         add_new_row_csv([timestamp, "music_off"])
+        request_speak("J'ai éteint la musique")
 
     # execute the command and learn the pattern
     elif speech == base_sentence+ " souviens-toi allume la lumière":
