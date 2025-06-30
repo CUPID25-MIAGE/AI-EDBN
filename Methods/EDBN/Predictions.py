@@ -14,8 +14,8 @@ VALUE_MAPS = {
         1: "il fait jour"
     },
     "event": {
-        "sunUp": "il fait jour",
-        "sunDown": "il fait nuit",
+        "sunUp": "le soleil s'est levé",
+        "sunDown": "le soleil s'est couché",
         "doorOpened": "porte ouverte",
         "doorClosed": "porte fermée",
         "lampOn": "lampe allumée",
@@ -164,6 +164,7 @@ def prob_unseen_combination(variable, val_tuple, parents):
     """
     Estimate the probabilities for the next value when current combination of values did not occur in the training data
     """
+    print("Its an unseen combination.")
     predictions = {}
     for i in range(len(val_tuple)):
         values = [[v] for v in val_tuple]
@@ -202,6 +203,8 @@ def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attrib
     """
     Estimate the probabilities for the next value when values that did not occur in the training data occur in the test data
     """
+    print("Its an unseen value.")
+
     predictions = {}
     for combination in variable.conditional_table.get_parent_combinations():
         valid_combination = True
@@ -512,6 +515,7 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     :param model: trained EDBN model
     :return: (max_val (predicted event), activity_probabilities, explanation, unknown_value)
     """
+
     print("parents: ",all_parents)
     #print("\n--- STARTING predict_case_first_suffix ---")
     activity_attr = log.activity  #only predict the main activity, not context (sunUp)
@@ -525,17 +529,29 @@ def predict_case_first_suffix(log, all_parents, attributes, current_row, model):
     explanation = ""
     parent_info = []
     value = []
-    
-    current_row[2] = current_row[1]
-    current_row[1] = current_row[0]
+    #decalage
+    i = log.k
+    while i>0:
+        current_row[i] = current_row[i-1]
+        i=i-1
     current_row[0] = [None] * len(all_parents)
     #building parent tuple
+    print("current row (apres decalage): ", current_row)
     for parent in all_parents[activity_attr]:
+        print("current row: ", current_row)
+        print("parent is: ", parent)
         val = current_row[parent["k"]][attributes.index(parent["name"])]
+        print("parent k: ", parent["k"])
+        print("attributes.index(parent[name])", attributes.index(parent["name"]))
+        print("int val: ", val)
         value.append(val)
         val_str = describe_value(parent["name"], val, log)
-        parent_info.append(f"{val_str}")
+        print("val_str: ", val_str)
+        if val is not None and (val!=0 or parent["name"]!=log.activity):
+            parent_info.append(f"{val_str}")
     tuple_val = tuple(value)
+    print("parent tuple is:", tuple_val)
+    
     #print(f"Parent tuple is: {tuple_val}")
     probs, unknown = get_probabilities(
         model.variables[activity_attr],
