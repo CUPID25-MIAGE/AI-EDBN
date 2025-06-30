@@ -164,7 +164,6 @@ def prob_unseen_combination(variable, val_tuple, parents):
     """
     Estimate the probabilities for the next value when current combination of values did not occur in the training data
     """
-    print("Its an unseen combination.")
     predictions = {}
     for i in range(len(val_tuple)):
         values = [[v] for v in val_tuple]
@@ -203,7 +202,6 @@ def prob_unseen_value(variable, parents, known_attributes_indexes, unseen_attrib
     """
     Estimate the probabilities for the next value when values that did not occur in the training data occur in the test data
     """
-    print("Its an unseen value.")
 
     predictions = {}
     for combination in variable.conditional_table.get_parent_combinations():
@@ -613,7 +611,7 @@ def coach_event(model, all_parents, attributes, current_row, outcome, target_att
     #print("parent_val to coach:", parent_val)
 
     if parent_val not in cpt.parent_count:
-        print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
+        #print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
         cpt.cpt[parent_val] = {outcome: 1}
         cpt.parent_count[parent_val] = 1
     else:
@@ -646,7 +644,6 @@ def coach_event_from_log(model, parents_tuple, outcome, target_attribute="event"
     #print("parent_val to coach:", parent_val)
 
     if parent_val not in cpt.parent_count:
-        print(f"Parent_val {parent_val} not found — adding it to CPT with count = 1")
         cpt.cpt[parent_val] = {outcome: 1}
         cpt.parent_count[parent_val] = 1
     else:

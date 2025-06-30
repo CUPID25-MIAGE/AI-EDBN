@@ -10,11 +10,11 @@ import Data
 from Utils.LogFile import LogFile
 from helper import *
 from datetime import datetime
-from Bayesian_AI.DevicesCommunication.requests import *
+#from Bayesian_AI.DevicesCommunication.requests import *
 
 
 #CONFIGURATION
-DATASET_NAME = "train_v5"
+DATASET_NAME = "train"
 SETTINGS = Predictions.setting.DBN
 
 
@@ -60,7 +60,7 @@ def predict_suffix(log, model, all_parents, attributes, current_row): # ------> 
         print("Predicted next event (code):", predicted_event_int)
         print("Predicted next event:", predicted_event_str)
         print("Probability of next event:", prob_event)
-        if predicted_event_str == "lampOn":
+        """         if predicted_event_str == "lampOn":
             request_lamp_on()
         elif predicted_event_str == "lampOff":
             request_lamp_off()
@@ -71,7 +71,7 @@ def predict_suffix(log, model, all_parents, attributes, current_row): # ------> 
         elif predicted_event_str == "musicOn":
             request_music_on()
         elif predicted_event_str == "musicOff":
-            request_music_off()
+            request_music_off() """
     else:
         print(f"Predicted {predicted_event_str}, no action to be done.")
 
@@ -88,12 +88,12 @@ def main():
     model = train_model(log)
 
     for realtime in logsList:
-        print(f"* Log {realtime} content : ")
-        print_csv_content(realtime)
-        print("\n\n")
-
+        #print(f"* Log {realtime} content : ")
+        #print_csv_content(realtime)
+        #print("\n\n")
+        print("\n--------------------------------------------------------------------------\nCURRENT LOG: ",realtime)
+        print("--------------------------------------------------------------------------")
         csvLog = prepare_data(realtime, log.values)
-        #TO DO: print content of the csv
         current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
         #predict
         all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
@@ -105,7 +105,7 @@ def main():
         )
         if explain:
             print("Explanation: ",explanation)
-            request_speak(explanation)
+            #request_speak(explanation)
         #example of coaching in weekend
         if coach and realtime == "realtime_weekend":
             coached_int=log.convert_string2int(log.activity, "musicOn") 
