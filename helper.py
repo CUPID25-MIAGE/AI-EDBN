@@ -116,4 +116,13 @@ def get_last_line_csv():
         return None, log_name
 
 
+import csv
+
+def print_csv_content(file_path):
+    with open(file_path, newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            print(row)
+
+
 # update_coach_model("sqd","fyuhjgk")
