@@ -225,7 +225,9 @@ def mainV4():
 
     for realtime in logsList:
         csvLog = prepare_data(realtime, log.values)
+        #TO DO: print content of the csv
         current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+        #predict
         all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
             log,
             model,
@@ -233,19 +235,29 @@ def mainV4():
             attributes=attributes,
             current_row=current_row
         )
-        # 
         if explain:
             print("Explanation: ",explanation)
             request_speak(explanation)
-        if coach:
-            coached_int = log.convert_string2int(log.activity, "lampOn")
+        #example of coaching in weekend
+        if coach and realtime == "realtime_weekend":
+            coached_int = log.convert_string2int(log.activity, "musicOn")
             coach_event(
                 model=model,
                 all_parents=all_parents,
                 attributes=attributes,
                 current_row=current_row,
-                outcome=coached_int #TO DO: example, on recupere ca de la reconnaissance vocale
+                outcome=coached_int 
             )
+            #predict
+            current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+            all_parents, attributes, current_row, explanation, parent_tuple = predict_suffix(
+                log,
+                model,
+                all_parents=all_parents,
+                attributes=attributes,
+                current_row=current_row
+            )
+
 
 if __name__ == '__main__':
     mainV2()
