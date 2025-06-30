@@ -1,9 +1,6 @@
 from Methods.EDBN import Predictions as edbn_predict
-from Methods.EDBN.Train import train
+from Methods.EDBN.Train import train, update
 from Methods.EDBN.Predictions import (
-    learn_duplicated_events,
-    predict_next_event_row,
-    predict_case_suffix_loop_threshold,
     get_prediction_attributes,
     predict_event,
     coach_event
@@ -15,7 +12,7 @@ from helper import *
 from datetime import datetime
 
 #CONFIGURATION
-DATASET_NAME = "train"
+DATASET_NAME = "train_v5"
 SETTINGS = Predictions.setting.DBN
 
 
@@ -42,6 +39,8 @@ def get_current_row(log, model):
     }
     return current_row, attributes, all_parents, trace
 
+
+
 def predict_suffix(log, model, all_parents, attributes, current_row): # ------> function to use for prediction
     predicted_event_int, predicted_event_str, prob_event, explanation = predict_event(
         log,
@@ -66,6 +65,7 @@ def predict_suffix(log, model, all_parents, attributes, current_row): # ------> 
 
 coach = False #TO DO: for testing : should be set dynamically (reconnaissance vocale)
 explain = True
+
 
 def main():
     print("===== START PROCESS =====")
@@ -97,18 +97,38 @@ def main():
             outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
         )
 
+
 def mainV2():
     print("===== START PROCESS =====")
     #executed once
     log = prepare_data()
     model = train_model(log)
 
+    #to be deleted
+    print("----------------------mapping train: ")
+    if "event" in log.values:
+        for i, val in enumerate(log.values["event"], 1): 
+            print(f"{val} -> {i}")
+    else:
+        print("No mapping found for 'event'")
+
     #TO DO: while true:
     #TO DO: if event received:
     while(True):
         csvName = input("enter csv name to predict (or 'exit' to quit): ")
         csvLog = prepare_data(csvName, log.values)
+
+        #to be deleted
+        print("----------------------mapping realtime: ")
+        if "event" in log.values:
+            for i, val in enumerate(csvLog.values["event"], 1): 
+                print(f"{val} -> {i}")
+        else:
+            print("No mapping found for 'event'")
+        
+        
         current_row, attributes, all_parents, _ = get_current_row(csvLog, model)
+        print("current row (original): ", current_row)
         all_parents, attributes, current_row, explanation = predict_suffix(
             log,
             model,
@@ -127,6 +147,8 @@ def mainV2():
                 current_row=current_row,
                 outcome=log.convert_string2int(log.activity, "lampOn") #TO DO: example, on recupere ca de la reconnaissance vocale
             )
+
+            #to do: add car j'etais coaché à faire ça.. dasn explanation
 
 
 if __name__ == '__main__':
